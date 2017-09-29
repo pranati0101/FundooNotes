@@ -1,0 +1,19 @@
+html
+  head
+    meta(charset="UTF-8")
+    title Create Account
+    link(rel="stylesheet" href="register.css")
+    script(src="http://code.jquery.com/jquery-1.9.1.min.js")
+    script(type="text/javascript" src="../register.js")
+  body
+    div(id="wrapper")
+      div(class="join") Sign-up
+      div(class="lock")
+      form(class="form2" name="register" method="post" action="/newUserLocal" id="form2")
+          input(type="text" placeholder="Enter your first name..." size="70" onClick="border: 1px solid #30a8da;" id="firstname")
+          input(type="text" placeholder="Enter your last name..." size="70" onClick="border: 1px solid #30a8da;" id="lastname")
+          input(type="text" placeholder="Enter your email address..." size="70" onClick="border: 1px solid #30a8da;" id="mail" name='email')
+          input(type="password" placeholder="Enter a password..." size="70" onClick="border: 1px solid #30a8da;" id="password" name='password')
+          input(type="password" placeholder="Confirm password.." size="70" onClick="border: 1px solid #30a8da;" id="password2")
+          button(class="create-acc" type="submit") Create My Account
+//- /*action="" method="get" */

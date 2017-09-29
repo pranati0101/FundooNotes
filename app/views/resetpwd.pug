@@ -1,0 +1,39 @@
+//- !DOCTYPE
+html
+  head
+    script(src="http://code.jquery.com/jquery-1.9.1.min.js")
+  meta(charset="UTF-8")
+  title Reset Password Form
+  link(rel="stylesheet" href="login.css")
+  body
+    div(id="otpDialog")
+  
+    div(id="wrapper")
+      div(class="mail-text")
+        div(class="form1")
+          p Enter Password.
+          br
+          input(name="password" type="password" placeholder="Enter Password" size="70" id="pwd")
+          input(type="password" placeholder="Confirm Password" size="70" id="pwd2")
+          button(class="login-acc" type="submit" id="setpwd" onclick="set()") Submit
+          div(id="set")
+            script(type="text/javascript").
+                  function set(){
+                    if(!true)
+                      alert("Passwords do not match!")
+                    else{
+                      console.log(localStorage.getItem('email'));
+                      $.ajax({
+                        type:"POST",
+                        url:"/updatePassword",
+                        data:{
+                          email:localStorage.getItem('email'),
+                          password:document.getElementById('pwd').value
+                        },
+                        datatype:'json'
+                      }).done(function(res){
+                        console.log(res);
+                        window.location.href='/';
+                      }) //.fail(alert("Error Occured!Try again."))
+                    }
+                    }
