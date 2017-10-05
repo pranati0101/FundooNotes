@@ -9,11 +9,25 @@ html
     div(id="wrapper")
       div(class="join") Sign-up
       div(class="lock")
-      form(class="form2" name="register" method="post" action="/newUserLocal" id="form2")
-          input(type="text" placeholder="Enter your first name..." size="70" onClick="border: 1px solid #30a8da;" id="firstname")
-          input(type="text" placeholder="Enter your last name..." size="70" onClick="border: 1px solid #30a8da;" id="lastname")
-          input(type="text" placeholder="Enter your email address..." size="70" onClick="border: 1px solid #30a8da;" id="mail" name='email')
-          input(type="password" placeholder="Enter a password..." size="70" onClick="border: 1px solid #30a8da;" id="password" name='password')
-          input(type="password" placeholder="Confirm password.." size="70" onClick="border: 1px solid #30a8da;" id="password2")
-          button(class="create-acc" type="submit") Create My Account
-//- /*action="" method="get" */
+      div(class="form2", name="register", id="form2")
+        form(method="POST" action="/newUserLocal")
+          div
+            input(type="text", placeholder="Enter your first name...", size="70", 
+             id="firstname", name="firstname")
+          div
+            input(type="text", placeholder="Enter your last name...", size="70", 
+              id="lastname", name="lastname")
+          div
+            input(type="text", placeholder="Enter your email address...", size="70", 
+               id="mail", name='email')
+          div
+            input(type="password", placeholder="Enter a password...", size="70", 
+              id="password", name='password')
+          div
+            input(type="password", placeholder="Confirm password..", size="70", 
+              id="password2")
+          button(class="create-acc", type="submit") Create My Account
+        div(class='clr')
+          hr
+          p
+           = message

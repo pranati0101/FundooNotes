@@ -1,6 +1,6 @@
 (function() {
     function init() {
-    $('.create-acc').click(register);
+    // $('.create-acc').click(register);
     // $('#firstname').change(chkname);
     // $('#lastname').change(chkname);
     // $('#password').change(chkpass);
@@ -39,38 +39,34 @@ if (!(regex.test(mail))) {
     }
   }
   //chk if user exists, if not create new user with password and insert into database
-  function register(event) {
-    var testform = document.getElementById('form2');
-    var firstname = form2.firstname.value;
-    var lastname = form2.lastname.value;
-    var mail = form2.mail.value;
-    var pass1=form2.password.value;
-    var pass2=form2.password2.value;
-    if (pass1 != pass2) {
-      alert("Enter same password !");
-    }
-    else {
-      var res = $.ajax({
-        url: '/newUserLocal',
-        type: 'POST',
-        dataType: "JSON",
-        data: {
-          "firstname": form2.firstname.value,
-          "lastname":form2.lastname.value,
-          "email":form2.mail.value,
-          "password": form2.password.value
-        }
-      }).done(function(result) {
-        console.log(result);
-        if (result.data == false) {
-          alert("User already registered!");
-
-        } else if (result.data == true) {
-          alert("New User registered!");
-        }
-      });
-    }
-    console.log("Registration finished");
-  }
-$(document).ready(init);
+  // function register(event) {
+  //   var form2 = document.getElementById('form2');
+  //   var firstname = document.getElementById('firstname').value;
+  //   var lastname = document.getElementById('lastname').value;
+  //   var mail = document.getElementById('mail').value;
+  //   var pass1=document.getElementById('password').value;
+  //   var pass2=document.getElementById('password2').value;
+  //   if (pass1 != pass2) {
+  //     alert("Enter same password !");
+  //   }
+  //   else {
+  //     console.log("sending data to server!!");
+      // $.ajax({
+      //   url: '/newUserLocal',
+      //   type: 'POST',
+      //   dataType: "JSON",
+      //   data: {
+      //     "firstname": firstname,
+      //     "lastname":lastname,
+      //     "email":mail,
+      //     "password":pass1
+      //   }
+      // }).then(function(res){
+      //   // if(err) console.error();
+      //   console.log(res);
+      //
+      // })
+  // }
+// }
+$(document).ready(init)
 })();

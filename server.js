@@ -1,4 +1,6 @@
-//declaring modules
+/**
+ * Module dependencies.
+ */
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
@@ -6,9 +8,12 @@ var mongoose = require('mongoose');
 var passport=require('passport');
 var session=require('express-session')
 var morgan=require('morgan')
-// var http = require('http').Server(app);
-// var io = require('socket.io').listen(http);
+var flash= require('connect-flash');
+var http = require('http').Server(app);
+var io = require('socket.io').listen(http);
 var jwt = require('jsonwebtoken');
+var schedule = require('node-schedule');
+const notifier = require('node-notifier')
 // var redis=require('redis');
 // var redisClient=redis.createClient();
 app.use(express.static('./app'));
@@ -19,7 +24,10 @@ app.use(bodyParser.urlencoded({
 // url = 'mongodb://localhost/notes';
 var authModel=require('./models/authModel')
 var User=require('./models/users');
-// var Message=require('./models/msgmodel');
+var Card=require('./models/cards');
+var userMethods=require('./models/userMethods')
+var cardMethods=require('./models/cardMethods')
+
 app.set('view engine', 'pug');
 app.set('views','./app/views');
 app.use(session({
@@ -30,13 +38,21 @@ app.use(session({
 app.use(morgan('dev'))
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
+app.use(flash())
+/**
+ * passing module dependencies
+ */
 require('./config/passport')(passport);
 // require('./index.js')(app,passport);
 require('./controllers/controllerHome.js')(app,passport);
 require('./controllers/loginController.js')(app,passport);
 require('./controllers/signUp.js')(app,passport);
-//listening at port 8001
-app.listen(4000, function() {
+require('./controllers/createCard.js')(app);
+require('./controllers/showCards.js')(app);
+require('./controllers/cardReminder.js')(app,schedule,notifier,Card,cardMethods)
+require('./controllers/socket')(app,io,cardMethods,schedule,notifier)
+//listening at port PORT
+http.listen(4000, function() {
   console.log("server is running on 4000");
 });
 /*exporting app*/

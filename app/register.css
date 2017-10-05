@@ -54,7 +54,7 @@ body {
 	font-size: 16px;
 }
 #wrapper {
-	positio:relative;
+	position:relative;
 	margin: 50px auto;
 	width: 540px;
 	height:460px;

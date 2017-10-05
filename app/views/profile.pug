@@ -3,8 +3,30 @@ html
     meta(charset="UTF-8")
     title Profile
     //- link(rel="stylesheet" href="register.css")
+    link(rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.1/jquery.timepicker.min.css")
+    link(rel="stylesheet" href="./card.css")
     script(src="http://code.jquery.com/jquery-1.9.1.min.js")
+    script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.1/jquery.timepicker.min.js")
+    script(src="http://localhost:4000/socket.io/socket.io.js")
+    script(type="text/javascript" src="../profile.js")
   body
     a(href="/logout") Logout
     div(id='space')
-      = user
+      //- = user._id
+    div(align="center")
+      form(method="" action="")
+        p Create a Note
+        div
+         input(type="text" id="cardTitle" placeholder="Enter title")
+        div
+         input(type="text" id="cardText" placeholder="Enter text")
+        div
+          p Set Reminder
+          input(type="text" id="datepicker")
+          input(type="text" id="timepicker")
+        div
+         button(type="button" id="submitbtn" onclick="createCard()") Submit
+        div(id="cards")
+          ul(id="cardList")

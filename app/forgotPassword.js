@@ -20,7 +20,11 @@ function check(event){
       console.log(res);
       if(res=='200'){
         alert("OTP sent.")
+      }else if(res=='404'){
+        alert("Email Id is not registered.")
       }
+      else if(res=='500')
+        alert("Could not send OTP. Network problem!")
     })
 }
 
@@ -40,7 +44,9 @@ function otpChk(event){
       else{
         alert("OTP not matched! Please enter again!")
       }
-    }).fail(alert("Error"))
+    }).fail(function(){
+        alert("Error")
+    })
   }
 }
   $(document).ready(init);

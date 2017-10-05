@@ -8,6 +8,8 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('../models/users').User;
 // load the auth variables
 var configAuth = require('./auth');
+//load user model methods
+var userMethods=require('../models/userMethods')
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -24,7 +26,7 @@ module.exports = function(passport) {
 
   // used to deserialize the user
   passport.deserializeUser(function(id, done) {
-    User.findById(id, function(err, user) {
+    userMethods.searchById(id, function(err, user) {
       done(err, user);
     });
   });
@@ -42,45 +44,28 @@ module.exports = function(passport) {
       passReqToCallback: true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) {
-      console.log(req.body);
+      console.log("in passport data--",req.body);
       // find a user whose email is the same as the forms email
       // we are checking to see if the user trying to login already exists
-      User.findOne({
-        'local.email': email
-      }, function(err, user) {
-        // if there are any errors, return the error
-        if (err)
-          return done(err);
+      userMethods.searchUser(email,0,0,function(err,user){
+        console.log(err,user);
+          if (err)
+            return done(err,false,req.flash('signupMessage', 'Error!'));
 
-        // check to see if theres already a user with that email
-        if (user) {
-          console.log("User exists");
-          return done(null, false);
-        } else {
-
-          // if there is no user with that email
-          // create the user
-          var newUser = new User();
-          console.log(req.body);
-          // set the user's local credentials
-          newUser.local.firstname = req.body.firstname,
-            newUser.local.lastname = req.body.lastname,
-            newUser.local.email = email;
-              // newUser.local.password = (password);
-          newUser.local.password = newUser.generateHash(password); // use the generateHash function in our user model
-          console.log(newUser);
-          // save the user
-          newUser.save(function(err) {
-            if (err)
-              throw err;
-            console.log("saving to db");
-            return done(null, newUser);
-          });
-        }
-
-      });
-
-    }));
+          // check to see if theres already a user with that email
+          if (user) {
+            console.log("User exists");
+            console.log(user);
+            return done(null, false,req.flash('signupMessage', 'That email is already taken.'));
+          }
+          else {
+            userMethods.createUser(req.body,null,null,function(err,newUser){
+                if(err) console.error();
+                else return done(null,newUser,req.flash('signupMessage', 'New User Registered.'))
+              })
+            }
+            });
+            }));
   // =========================================================================
   // FACEBOOK ================================================================
   // =========================================================================
@@ -92,7 +77,6 @@ module.exports = function(passport) {
       callbackURL: configAuth.facebookAuth.callbackURL,
       enableProof: true,
       profileFields: ['id', 'displayName', 'name', 'photos']
-
     },
 
     // facebook will send back the token and profile
@@ -100,45 +84,27 @@ module.exports = function(passport) {
       console.log("logging via fb..");
       // asynchronous
       process.nextTick(function() {
-  console.log("profile,info",profile);
+      console.log("profile,info",profile);
         // find the user in the database based on their facebook id
-        User.findOne({
-          'facebook.id': profile.id
-        }, function(err, user) {
+        userMethods.searchUser(0,profile.id,0,function(err,user){
+        // if there is an error, stop everything and return that
+        // ie an error connecting to the database
+        if (err)
+          return done(err,false,req.flash('loginMessage', 'Error.'));
 
-          // if there is an error, stop everything and return that
-          // ie an error connecting to the database
-          if (err)
-            return done(err);
-
-          // if the user is found, then log them in
-          if (user) {
-            return done(null, user); // user found, return that user
-          } else {
-            // if there is no user found with that facebook id, create them
-            var newUser = new User();
-
-            // set all of the facebook information in our user model
-            newUser.facebook.id = profile.id; // set the users facebook id
-            newUser.facebook.firstname = profile.first_name; // set the users facebook id
-            newUser.facebook.lastname = profile.last_name; // set the users facebook id
-            // newUser.facebook.id = profile.; // set the users facebook id
-
-
-            // save our user to the database
-            newUser.save(function(err) {
-              if (err)
-                throw err;
-                console.log("saving to db..");
-              // if successful, return the new user
-              return done(null, newUser);
-            });
-          }
+        // if the user is found, then log them in
+        if (user) {
+          return done(null, user); // user found, return that user
+        } else {
+          // if there is no user found with that facebook id, create them
+          var newUser =userMethods.createUser(null,profile,null,function(err,newUser){
+            if(err) console.error();
+            else return done(null,newUser)
+          })
+        }
         });
-      });
-    }));
-
-
+        })
+      }));
   // =========================================================================
   // GOOGLE ==================================================================
   // =========================================================================
@@ -152,37 +118,27 @@ module.exports = function(passport) {
       // make the code asynchronous
       // User.findOne won't fire until we have all our data back from Google
       process.nextTick(function() {
+      console.log("profile,info",profile);
         // try to find the user based on their google id
-        User.findOne({
-          'google.id': profile.id
-        }, function(err, user) {
-          if (err)
-            return done(err);
+      userMethods.searchUser(0,0,profile.id,function(err,user){
+      // if there is an error, stop everything and return that
+      // ie an error connecting to the database
+      if (err)
+        return done(err,false,req.flash('loginMessage', 'Error.'));
 
-          if (user) {
-
-            // if a user is found, log them in
-            return done(null, user);
-          } else {
-            // if the user isnt in our database, create a new user
-            var newUser = new User();
-
-            // set all of the relevant information
-            newUser.google.id = profile.id;
-            newUser.google.lastname = profile.name.familyName;
-            newUser.google.firstname = profile.name.givenName;
-            newUser.google.email = profile.emails[0].value; // pull the first email
-
-            // save the user
-            newUser.save(function(err) {
-              if (err)
-                throw err;
-              return done(null, newUser);
-            });
-          }
-        });
-      });
-    }));
+      // if the user is found, then log them in
+      if (user) {
+        return done(null, user); // user found, return that user
+      } else {
+        // if there is no user found with that facebook id, create them
+        var newUser =userMethods.createUser(null,null,profile,function(err,newUser){
+          if(err) console.error();
+          else return done(null,newUser)
+        })
+     }
+   });
+ });
+ }));
 
   // =========================================================================
   // LOCAL LOGIN =============================================================
@@ -197,41 +153,30 @@ module.exports = function(passport) {
       passReqToCallback: true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) { // callback with email and password from our form
-      console.log("finding data");
-      // find a user whose email is the same as the forms email
-      // we are checking to see if the user trying to login already exists
-      User.findOne({
-        'local.email': email
-      }, function(err, user) {
-        // if there are any errors, return the error before anything else
-        if (err){
-          console.log("Error while connecting to db");
-            return done(err);
-        }
-
-
-        // if no user is found, return the message
-        if (!user){
-          console.log("User not Found");
-          return done(null, false); // req.flash is the way to set flashdata using connect-flash
-
-        }
-
-        // // if the user is found but the password is wrong
-        // if (user.local.password !=password){
-        //   console.log("Incorrect Password");
-        //   return done(null, false); // create the loginMessage and save it to session as flashdata
-        // }
-        // if the user is found but  the password is wrong
-        if (!user.validPassword(password)){
-          console.log("Incorrect Password");
-          return done(null, false); // create the loginMessage and save it to session as flashdata
-        }
-
-
-        // all is well, return successful user
-        return done(null, user);
-      });
-
-    }));
+        console.log("finding data");
+        // find a user whose email is the same as the forms email
+        userMethods.searchUser(email,0,0,function(err, user) {
+          // if there are any errors, return the error before anything else
+          // console.log(err,user);
+          if (err){
+            console.log("Error while connecting to db");
+              return done(err,false,req.flash('loginMessage', 'Error.'));
+          }
+          // if no user is found, return the message
+          if (!user){
+            console.log("User not Found");
+            return done(null, false,req.flash('loginMessage', 'User not registered.')); // req.flash is the way to set flashdata using connect-flash
+          }
+          else
+          {
+            // if the user is found but  the password is wrong
+            if (!user.validPassword(password)){
+              console.log("Incorrect Password");
+              return done(null, false,req.flash('loginMessage', 'Incorrect Password.')); // create the loginMessage and save it to session as flashdata
+            }
+            // all is well, return successful user
+            return done(null, user);
+          }
+        });
+      }));
 };
