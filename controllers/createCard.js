@@ -18,5 +18,14 @@ module.exports=function(app){
       }
     })
   })
-
+//card is deleteCard
+  app.post('/deleteCard',function(req,res){
+    cardMethods.deleteCard(req.body.cardId,function(err,card){
+      if(err) console.error();
+      else{
+          // userMethods.upadteNumberOfCards(req.user._id,-1);
+          res.json(card);
+      }
+    })
+  });
 }

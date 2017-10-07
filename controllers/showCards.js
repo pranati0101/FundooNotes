@@ -8,11 +8,6 @@ module.exports=function(app){
 
   app.get('/showCards',function(req,res){
     console.log(req.user._id);
-    cardMethods.getCards(req.user._id,function(err,card){
-      if(err) console.error();
-      else{
-          res.json({card:card});
-      }
-    })
+
   })
 }

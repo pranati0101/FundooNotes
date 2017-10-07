@@ -50,7 +50,8 @@ require('./controllers/signUp.js')(app,passport);
 require('./controllers/createCard.js')(app);
 require('./controllers/showCards.js')(app);
 require('./controllers/cardReminder.js')(app,schedule,notifier,Card,cardMethods)
-require('./controllers/socket')(app,io,cardMethods,schedule,notifier)
+require('./controllers/socket.js')(app, io, cardMethods, schedule, notifier)
+// require('./controllers/socket')(app,io,cardMethods,schedule,notifier)
 //listening at port PORT
 http.listen(4000, function() {
   console.log("server is running on 4000");

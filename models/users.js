@@ -20,8 +20,14 @@ numberOfCards:{
   local: {
     firstname: String,
     lastname: String,
-    email: String,
-    password: String,
+    email: {
+      type:String,
+      default:false
+    },
+    password:{
+      type:String,
+      default:false
+    }
   },
   facebook: {
     id: String,

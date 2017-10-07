@@ -167,16 +167,20 @@ module.exports = function(passport) {
             console.log("User not Found");
             return done(null, false,req.flash('loginMessage', 'User not registered.')); // req.flash is the way to set flashdata using connect-flash
           }
-          else
-          {
+          if(user.local.password=='false'){
+            console.log("Set Password");
+            return done(null, false,req.flash('loginMessage', 'Set Password.')); // create the loginMessage and save it to session as flashdata
+
+          }
+
             // if the user is found but  the password is wrong
-            if (!user.validPassword(password)){
+           if (!user.validPassword(password)){
               console.log("Incorrect Password");
               return done(null, false,req.flash('loginMessage', 'Incorrect Password.')); // create the loginMessage and save it to session as flashdata
             }
             // all is well, return successful user
             return done(null, user);
-          }
+
         });
       }));
 };

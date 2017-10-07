@@ -20,9 +20,13 @@ exports.searchUser = function(email, fb, google, done)
   User.findOne({
     $or: [{
       'local.email': email
-    }, {
+    },{
+      'facebook.email': email
+    },{
       'facebook.id': fb
-    }, {
+    },{
+      'google.email': email
+    },{
       'google.id': google
     }]
   }, function(err, user) {
@@ -62,6 +66,7 @@ exports.createUser = function(data, fb, google, done) {
      newUser.local.password = newUser.generateHash(data.password);
   }
   if (fb) {
+    console.log(fb);
     // set all of the facebook information in our user model
     newUser.facebook.id = fb.id; // set the users facebook id
     newUser.facebook.firstname = fb.first_name; // set the users firstname
@@ -73,6 +78,7 @@ exports.createUser = function(data, fb, google, done) {
     newUser.google.lastname = google.name.familyName;
     newUser.google.firstname = google.name.givenName;
     newUser.google.email = google.emails[0].value; // pull the first email
+    newUser.local.email=google.emails[0].value;
   }
   // save the user
   newUser.save(function(err) {

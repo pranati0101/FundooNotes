@@ -8,10 +8,10 @@ var mongoose = require('mongoose');
 
 var cardSchema = mongoose.Schema({
 cardId:{
-  type:Object
+  type:String
 },
 userId:{
-  type:Object,
+  type:String,
   required:true
 },
 title:{
@@ -21,6 +21,10 @@ title:{
 text:{
   type:String,
 },
+image:{
+  data:Buffer,
+  contentType:String
+  },
 color:{
   type:String,
   default:"white"
@@ -48,31 +52,36 @@ lastModified:{
 reminder:{
   date:{
     type:Number,
-    default:null
+    default:-1
   },
   month:{
     type:Number,
-    default:null
+    default:-1
   },
   year:{
     type:Number,
-    default:null
+    default:-1
   },
    hours:{
     type:Number,
-    default:null
+    default:-1
   },
   minutes:{
     type:Number,
-    default:null
+    default:-1
   },
   seconds:{
     type:Number,
+    default:-1
+  },
+  job:{
+    type:Object,
     default:null
   }
 },
 collaborator:{
-  type:String
+  type:String,
+  default:'none'
 }
 });
 
