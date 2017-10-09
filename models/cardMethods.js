@@ -33,6 +33,15 @@ exports.getCardById = function(id, callback) {
     callback(err, card);
   })
 };
+//get reminder status
+exports.getReminderStatus = function(id, callback) {
+  Card.findOne({cardId:id}, function(err, card) {
+    if(err)
+      callback(err,null)
+    else
+      callback(null,card.reminder.status)
+  })
+};
 //set reminder
 exports.setReminder = function(data,id,callback) {
   Card.findOneAndUpdate({'cardId':id},{$set:
@@ -42,7 +51,8 @@ exports.setReminder = function(data,id,callback) {
     'reminder.year':data.year,
     'reminder.hours':data.hours,
     'reminder.minutes':data.minutes,
-    'reminder.seconds':data.seconds
+    'reminder.seconds':data.seconds,
+    'reminder.status':true
   }},function(err,card){
     console.log("cardMethod setReminder-",err,card);
     if(err) callback(err,false);

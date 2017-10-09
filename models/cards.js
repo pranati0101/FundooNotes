@@ -52,7 +52,11 @@ lastModified:{
 reminder:{
   date:{
     type:Number,
-    default:-1
+    default:-1,
+    status:{
+      type:Boolean,
+      default:false
+    }
   },
   month:{
     type:Number,

@@ -2,45 +2,42 @@ html
   head
     meta(charset="UTF-8")
     title Profile
-    //- link(rel="stylesheet" href="register.css")
-    link(rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
-    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.1/jquery.timepicker.min.css")
+    link(rel="stylesheet" href="./register.css")
+    link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css")
+    link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.css")
     link(rel="stylesheet" href="./card.css")
-    script(src="http://localhost:4000/socket.io/socket.io.js")
-    script(src="http://code.jquery.com/jquery-1.9.1.min.js")
-    script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.8.1/jquery.timepicker.min.js")
-    script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js")
+    script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
+    script(src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js")
+    script(src="http://builds.emberjs.com/tags/v1.5.0/ember.js")
+    script(src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js")
     script(src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js")
-    script(src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js")
-    script(src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js")
+    script(src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js")
+    script(src="http://localhost:4000/socket.io/socket.io.js")
     script(type="text/javascript" src="../profile.js")
   body
     a(href="/logout") Logout
     input(type="text" id='space' value 
-        = user._id
-        )
-      
-      //- = user._id
+      = user._id
+      )
     div(align="center")
-      form(method="" action="")
-        p Create a Note
-        div
-         input(type="text" id="cardTitle" placeholder="Enter title")
-        div
-         input(type="text" id="cardText" placeholder="Enter text")
-        div
-          
-        div
-         button(type="button" id="submitbtn" onclick="createCard()") Submit
-        div(id="cards")
-          ul(id="cardList")  
-      a(id="reminderDialog" href="#openModal")
-      div(id="openModal" class="modalDialog")
-         div
-           a(href="/profile" title="Close" class="close") X
-           p Set Reminder:
-           form(method="post" action="/setReminder")
-           input(type="text" id="datepicker")
-           input(type="text" id="timepicker")
-           input(type="submit" id="submitbtn" value="Submit")
+    form(method="" action="")
+      p Create a Note
+      div
+        input(type="text" id="cardTitle" placeholder="Enter title")
+      div
+        input(type="text" id="cardText" placeholder="Enter text")
+      div
+        button(type="button" id="submitbtn" onclick="createCard()") Submit
+      div(id="cards")
+        ul(id="cardList")
+      a(href="#openModal" id="showModal")
+      div(id="openModal" class="modal-dialog")
+        div(class="modal-content")
+          div(class="modal-body")
+            p Set Reminder:
+            input(style="display:none" id="cid")
+            input(type="text" name="date" id="datepicker")
+            input(type="text" name="time" id="timepicker")
+          div(class="modal-footer")
+            button(type="button" id="submitbtn" class="btn btn-primary" value="Set" onclick="setReminder()") Set
+            button(type="button" class="btn btn-primary" data-dismiss="modal" value="Cancel") Cancel

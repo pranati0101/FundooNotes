@@ -16,9 +16,6 @@ cardMethods.setReminder(data,data.cardId,function(err,res){
 //rescheduling reminders
 exports.resetReminder=function(schedule,notifier,cardMethods,data,callback){
   var date=new Date(data.year,data.month,data.date,data.hours,data.minutes,data.seconds);
-  var id=data.cardId
-  console.log(schedule);
-  console.log("in list",schedule.scheduledJobs.sdf)
   schedule.rescheduleJob(data.cardId,date);
   console.log("rescheduled");
   //saving reminder in db
