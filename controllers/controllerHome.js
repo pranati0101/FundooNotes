@@ -24,8 +24,12 @@ module.exports=function(app){
 //apis for displaying different pages
 
   app.get('/',function(req,res){
-    res.render('login.pug',{message: req.flash('loginMessage')});
-    
+    if(req.user){
+      res.redirect('/profile')
+    }
+    else{
+        res.render('login.pug',{message: req.flash('loginMessage')});
+    }
   })
 
   app.get('/home',function(req,res){
@@ -51,7 +55,12 @@ module.exports=function(app){
   })
 
   app.get('/profile',function(req,res){
+    if(req.user){
       res.render('profile.pug',{user:req.user});
+    }
+    else{
+      res.redirect('/')
+    }
       console.log(" Profile");
   })
 }

@@ -99,6 +99,7 @@ ol li{display:inline;
 ol li a{color:#fff;}
 
 /* reminder dialog box */
+
 .modalDialog {
 	position: relative;
 	font-family: Arial, Helvetica, sans-serif;

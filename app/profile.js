@@ -65,7 +65,7 @@ function createCard(){
       console.log(result);
       document.getElementById('cardList').innerHTML +="<li><h2>"+
       title+"</h2><p>"+text+"</p><input style='display:none' id='cardId'value='"+result.cardId+
-      "'/><a onclick="+"openModal(\'"+dashBoard[i].cardId+"\')>Reminder</a></li>";
+      "'/><a onclick="+"openModal(\'"+result.cardId+"\')>Reminder</a></li>";
   })
 }
 

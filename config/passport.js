@@ -76,7 +76,7 @@ module.exports = function(passport) {
       clientSecret: configAuth.facebookAuth.clientSecret,
       callbackURL: configAuth.facebookAuth.callbackURL,
       enableProof: true,
-      profileFields: ['id', 'displayName', 'name', 'photos']
+      profileFields: ['id', 'displayName', 'name', 'photos','email']
     },
 
     // facebook will send back the token and profile
@@ -86,7 +86,7 @@ module.exports = function(passport) {
       process.nextTick(function() {
       console.log("profile,info",profile);
         // find the user in the database based on their facebook id
-        userMethods.searchUser(0,profile.id,0,function(err,user){
+        userMethods.searchUser(profile.email,profile.id,0,function(err,user){
         // if there is an error, stop everything and return that
         // ie an error connecting to the database
         if (err)

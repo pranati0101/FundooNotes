@@ -13,15 +13,15 @@
     var lastname = document.getElementById('lastname').value;
     // var regex = new RegExp("^[a-zA-Z0-9@_]+$");
     var regex = new RegExp("^[a-zA-Z]+$");
-    if (!(regex.test(firstname)) || !(regex.test(firstname))) {
+    if (!(regex.test(firstname)) || !(regex.test(lastname))) {
       alert("Enter valid First and Last name !");
     }
   }
-var regex=/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
   function chkpass(event){
     var form2 = document.getElementById('form2');
     var pass = form2.password.value;
     // var regex = new RegExp("^[a-zA-Z0-9@_]+$");
+    // var regex=/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
 
     if (!(regex.test(pass))) {
       alert("minimum length of password must be 6 characters and it must contain"+
