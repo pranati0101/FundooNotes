@@ -17,9 +17,9 @@ numberOfCards:{
   type: Number,
   default:0
 },
+firstname: String,
+lastname: String,
   local: {
-    firstname: String,
-    lastname: String,
     email: {
       type:String,
       default:false
@@ -31,15 +31,11 @@ numberOfCards:{
   },
   facebook: {
     id: String,
-    email: String,
-    firstname: String,
-    lastname: String
+    email: String
   },
   google: {
     id: String,
-    email: String,
-    firstname: String,
-    lastname: String
+    email: String
   }
 });
 

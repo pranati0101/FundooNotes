@@ -22,6 +22,11 @@ text:{
   type:String,
 },
 image:{
+  data: Buffer,
+  contentType: String,
+  default:null
+},
+image:{
   data:Buffer,
   contentType:String
   },

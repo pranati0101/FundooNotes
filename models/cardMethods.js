@@ -78,3 +78,66 @@ exports.deleteCard=function(id,callback){
     console.log(res);
   })
 }
+//move to trash
+exports.moveToTrash=function(cardId,callback){
+  Card.findOneAndUpdate({cardId:cardId},{$set:
+    {
+    trash: Date.now()
+  }},function(err,info){
+    if(err) callback(err,null)
+    else callback(null,info)
+  })
+}
+//restore card
+exports.restoreCard=function(cardId,callback){
+  Card.findOneAndUpdate({cardId:cardId},{$set:
+    {
+    trash: null
+  }},function(err,info){
+    if(err) callback(err,null)
+    else callback(null,info)
+  })
+}
+//move to archived
+exports.moveToArchive=function(cardId,callback){
+  Card.findOneAndUpdate({cardId:cardId},{$set:
+    {
+    archived: true
+  }},function(err,info){
+    if(err) callback(err,null)
+    else callback(null,info)
+  })
+}
+//unarchive
+exports.unarchive=function(cardId,callback){
+  Card.findOneAndUpdate({cardId:cardId},{$set:
+    {
+    archived: false
+  }},function(err,info){
+    if(err) callback(err,null)
+    else callback(null,info)
+  })
+}
+exports.pinned=function(cardId,callback){
+  Card.findOne({cardId:cardId},function(err,info){
+    if(err) console.log(err);
+    var pin=!(info.pinned)
+    Card.findOneAndUpdate({cardId:cardId},{$set:{
+      pinned:pin,
+      archived:false
+    }},function(err,res){
+      if(err) callback(err,null)
+      else if(!res) callback(null,null)
+      else {
+        callback(null,'done')
+      }
+    })
+  })
+}
+//adding image
+exports.addImage=function(fs,cardId,imgSrc,callback){
+  Card.findOne({cardId:cardId},function(err,card){
+    card.image.data=fs.readFileSync(imgSrc);
+    card.image.contentType = 'image/png';
+  })
+}

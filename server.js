@@ -14,6 +14,7 @@ var io = require('socket.io').listen(http);
 var jwt = require('jsonwebtoken');
 var schedule = require('node-schedule');
 const notifier = require('node-notifier')
+var fs=require('fs');
 // var redis=require('redis');
 // var redisClient=redis.createClient();
 app.use(express.static('./app'));
@@ -47,10 +48,12 @@ require('./config/passport')(passport);
 require('./controllers/controllerHome.js')(app,passport);
 require('./controllers/loginController.js')(app,passport);
 require('./controllers/signUp.js')(app,passport);
-require('./controllers/createCard.js')(app);
+require('./controllers/createCard.js')(app,fs,cardMethods);
 require('./controllers/showCards.js')(app);
 require('./controllers/cardReminder.js')(app,schedule,notifier,Card,cardMethods)
-require('./controllers/socket.js')(app, io, cardMethods, schedule, notifier)
+require('./controllers/socket.js')(app, io, userMethods, cardMethods, schedule, notifier)
+require('./controllers/Trash.js')(app,cardMethods)
+require('./controllers/Archive.js')(app,cardMethods)
 // require('./controllers/socket')(app,io,cardMethods,schedule,notifier)
 //listening at port PORT
 http.listen(4000, function() {

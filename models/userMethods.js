@@ -13,6 +13,21 @@ exports.searchById = function(id, done) {
     done(err, user);
   })
 };
+exports.getUserInfo=function(userId,done){
+  User.findOne({'userId':userId},function(err,userInfo){
+    if(err) done(err,null);
+    else{
+      console.log("in db methods",userInfo);
+      info={
+        firstname:userInfo.firstname,
+        lastname:userInfo.lastname,
+        email:userInfo.local.email
+      }
+      done(null,info)
+    }
+
+  })
+}
 //search user by email or google id or facebook id
 exports.searchUser = function(email, fb, google, done)
  {
@@ -58,9 +73,9 @@ exports.createUser = function(data, fb, google, done) {
   var newUser = new User();
   // set the user's local credentials
   if (data) {
-      newUser.local.userId = String(newUser._id),
-      newUser.local.firstname = data.firstname,
-      newUser.local.lastname = data.lastname,
+      newUser.userId = String(newUser._id);
+      newUser.firstname = data.firstname;
+      newUser.lastname = data.lastname;
       newUser.local.email = data.email;
     // use the generateHash function in our user model
      newUser.local.password = newUser.generateHash(data.password);
@@ -68,15 +83,17 @@ exports.createUser = function(data, fb, google, done) {
   if (fb) {
     console.log(fb);
     // set all of the facebook information in our user model
+    newUser.userId = String(newUser._id);
     newUser.facebook.id = fb.id; // set the users facebook id
-    newUser.facebook.firstname = fb.first_name; // set the users firstname
-    newUser.facebook.lastname = fb.last_name; // set the users lastname
+    newUser.firstname = fb.first_name; // set the users firstname
+    newUser.lastname = fb.last_name; // set the users lastname
   }
   if (google) {
     // set all of the relevant information
+    newUser.userId = String(newUser._id);
     newUser.google.id = google.id;
-    newUser.google.lastname = google.name.familyName;
-    newUser.google.firstname = google.name.givenName;
+    newUser.lastname = google.name.familyName;
+    newUser.firstname = google.name.givenName;
     newUser.google.email = google.emails[0].value; // pull the first email
     newUser.local.email=google.emails[0].value;
   }
