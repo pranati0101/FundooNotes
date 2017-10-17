@@ -13,15 +13,6 @@ exports.searchById = function(id, done) {
     done(err, user);
   })
 };
-//add profilePic
-exports.addProfilePic=function(id,fname){
-User.findOneAndUpdate({userId:id},{$set:{
-  profilePic:fname
-}},function(err,info){
-  console.log(err);
-})
-}
-//get user info
 exports.getUserInfo=function(userId,done){
   User.findOne({'userId':userId},function(err,userInfo){
     if(err) done(err,null);

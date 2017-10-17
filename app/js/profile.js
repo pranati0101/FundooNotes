@@ -1,8 +1,7 @@
 $(document).on('click','a.popoverReminder',function(){
   $(this).popover({
     html: true,
-    title:'<input type="text" class="datepicker"><br><input type="text" class="timepicker"><button type="submit" id="setReminder"> Submit</button>'
-    // content:''
+    title:'<input type="text" class="datepicker" placeholder="Enter date"><br><input type="text" placeholder="Enter time" class="timepicker"><br><button type="submit" id="setReminder"> Submit</button>'
   })
   $(this).on('shown.bs.popover', function () {
 
@@ -11,41 +10,30 @@ $(document).on('click','a.popoverReminder',function(){
     $('#setReminder').on('click',function(){
       var date=$(event.target).closest('#footerButtons').find('.datepicker').val();
       var time=$(event.target).closest('#footerButtons').find('.timepicker').val();
-            var id=$(event.target).closest('.col-md-4').attr('id');
-      console.log(date,time,id);
-      if(time.substr(6,2)=='PM')
-        hours=time.substr()
+      var id=$(event.target).closest('.col-md-4').attr('id');
+      var hours=parseInt(time.substr(0,2))
+      var month=parseInt(date.substr(0,2))-1;
+      if(time.substr(6,2)=='PM' && hours<12)
+        hours=hours+12
       var values={
-        date:date.substr(0,2),
-        month:date.substr(3,2),
+        date:date.substr(3,2),
+        month:month,
         year:date.substr(6,4),
-        hours:time.substr(0,2),
+        hours:hours,
         minutes:time.substr(3,2),
-        seconds:,
+        seconds:0,
         cardId:id
       }
-      console.log(values);
-      // $.ajax({
-      //   url:'/setReminder',
-      //   method:'POST',
-      //   dataType:'JSON',
-      //   data:values
-      // }).done(function(err,res){
-      //   if(err) console.error();
-      //   console.log(res);
-      // })
-      // $.ajax({
-      //   url:'/setReminder',
-      //   method:'POST',
-      //   dataType:'JSON',
-      //   data:values
-      // }).done(function(err,res){
-      //   if(err) console.error();
-      //   console.log(res);
-      // })
-
-    })
+      $.ajax({
+        url:'/setReminder',
+        method:'POST',
+        dataType:'JSON',
+        data:values
+      }).done(function(err,res){
+        if(err) console.error();
+      })
   })
+})
 })
   $(document).ready(function() {
 
@@ -68,7 +56,7 @@ $(document).on('click','a.popoverReminder',function(){
 
     socket.on('showCards',function(dashBoard,archived,pinned,trash){
       console.log("printing cards");
-      console.log(dashBoard,archived,pinned,trash);
+      // console.log(dashBoard,archived,pinned,trash);
 
       if(pinned.length>0){
           document.getElementById('pinnedLabel').innerHTML+='PINNED';
@@ -79,10 +67,22 @@ $(document).on('click','a.popoverReminder',function(){
       }
 
       if(dashBoard.length>0){
-        for(i=0;i<dashBoard.length;i++)
-          appendCard(dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList')
-        }
+        for(i=0;i<dashBoard.length;i++){
+          appendCard(dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList')//.then(function(){
+            if(dashBoard[i].image != null)
+            {
+              var img = document.createElement("IMG");
+                img.src = "../Images/"+dashBoard[i].image;
+                var elem=document.getElementById(dashBoard[i].cardId)
+                $(elem).find('.cardImage').append(img);
+                // var cardImg= $(elem).find('.cardImage');
+                // console.log(cardImg);
+                // elem.style.backgroundImage='url("../Images/"'+dashBoard[i].image+'")';
+            }
+          // })
 
+        }
+      }
       // var scriptElement=document.createElement('script');
       // scriptElement.type = 'text/javascript';
       // scriptElement.src = "../js/dateTime.js";
@@ -118,19 +118,32 @@ function appendCard(title,text,cardId,divId){
   if(divId=='pinned')
     url='../icons/pinned.svg'
   else url='../icons/pin.svg'
+  imgSrc=""
   document.getElementById(divId).innerHTML+="<div class='col-md-4' id='"+cardId+"'><div class='card'>"+
          '<a href="pin?cardId='+cardId +'"><img src='+url+' style="float:right" alt="pin" id="pinIcon"/></a>'+
-          "<div class='card-content'><h4 class='title'><p contentEditable='true'>"+title+"</h4><span class='text-success'>"+
-          "<p contentEditable='true'>"+text+"</span>"+"</div><div class='card-footer'><div><i class='material-icons'>access_time</i>"+
+        //  "<div class='cardImage'> </div>"+
+          "<div class='cardImage'></div><div class='card-content'><br><h4 class='title'><p contentEditable='true'>"+title+"</h4><span class='text-success'>"+
+          "<p contentEditable='true'>"+text+"</span>"+"</div>"+
+          "<div class='card-footer'><div><i class='material-icons'>access_time</i>"+
           "Last modified on"+"<div><div id='footerButtons'>"+
           "<a class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>"+
-          '<a><i class="material-icons" onclick="moveToArchive(\'' + cardId + '\')">archive</i></div>&nbsp'+
+          '<a><i class="material-icons" onclick="moveToArchive(\'' + cardId + '\')">archive</i></a>&nbsp'+
           '<a><i class="material-icons" onclick="addCollaborator(\'' + cardId + '\')">person_add</i></a>&nbsp'+
           '<a><i class="material-icons" onclick="addColor(\'' + cardId + '\')">color_lens</i></a>&nbsp'+
-          '<label for="imgSrc"><i class="material-icons">insert_photo</i></label><input type="file" style="display:none" id="imgSrc" onchange="addImage(event)">&nbsp'+
+          '<div class="dropdown"><a data-toggle="dropdown"><i class="material-icons">insert_photo</i></a><ul class="dropdown-menu">'+
+          '<form id="frmUploader" enctype="multipart/form-data" action="/addImage?cardId='+cardId+'" method="post">'+
+        '<input name="imgUploader" type="file" id="imgSrc" multiple/><input type="submit"></input></form></ul></div>'+
           '<a><i class="material-icons" onclick="moveToTrash(\'' + cardId + '\')">delete</i></a>&nbsp'+
           "</div></div><div>"
 }
+// function insertImage(event){
+//   // var elem=($(event.target).closest('#footerButtons').find('#frmUploader'));
+//   // console.log(elem.find('#imgSrc').val());
+//   // var imgDiv=$(event.target).closest('#cardImage');
+//   // var img = document.createElement("IMG");
+//   //   img.src = ;
+//   //   imgDiv.appendChild(img);                  //.find('#imgSrc').val());
+// }
 // <form id="frmUploader" enctype="multipart/form-data" action="api/Upload/" method="post">
 //     <input type="file" name="imgUploader" multiple />
 //     <input type="submit" name="submit" id="btnSubmit" value="Upload" />

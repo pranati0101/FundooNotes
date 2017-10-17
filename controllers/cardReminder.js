@@ -4,20 +4,24 @@ module.exports=function(app,schedule,notifier,Card,cardMethods){
 app.post('/setReminder',function(req,res){
   console.log("in cardReminder",req.body);
   cardMethods.getReminderStatus(req.body.cardId,function(err,status){
-    if(status){
-      scheduleReminder.resetReminder(schedule,notifier,cardMethods,req.body,
-      function(err,response){
-        if(err) console.error();
-        res.send(response);
-      })
-    }
-      else{
-        scheduleReminder.setReminder(schedule,notifier,cardMethods,req.body,
-          function(err,response){
-            if(err) console.error();
-            res.send(response)
+    console.log(status);
+    if(status !=null){
+      if(status){
+        scheduleReminder.resetReminder(schedule,notifier,cardMethods,req.body,
+        function(err,response){
+          if(err) console.error();
+          res.send(response);
         })
       }
+        else{
+          scheduleReminder.setReminder(schedule,notifier,cardMethods,req.body,
+            function(err,response){
+              if(err) console.error();
+              res.send(response)
+          })
+        }
+    }
+
   })
 })
 //reschedule existing reminder

@@ -38,6 +38,8 @@ exports.getReminderStatus = function(id, callback) {
   Card.findOne({cardId:id}, function(err, card) {
     if(err)
       callback(err,null)
+      else if(!card)
+      callback(null,null)
     else
       callback(null,card.reminder.status)
   })
@@ -54,7 +56,7 @@ exports.setReminder = function(data,id,callback) {
     'reminder.seconds':data.seconds,
     'reminder.status':true
   }},function(err,card){
-    console.log("cardMethod setReminder-",err,card);
+    console.log("cardMethod setReminder-",err);
     if(err) callback(err,false);
     else{
       callback(null,card);
@@ -135,9 +137,19 @@ exports.pinned=function(cardId,callback){
   })
 }
 //adding image
-exports.addImage=function(fs,cardId,imgSrc,callback){
-  Card.findOne({cardId:cardId},function(err,card){
-    card.image.data=fs.readFileSync(imgSrc);
-    card.image.contentType = 'image/png';
+// exports.addImage=function(fs,cardId,imgSrc,callback){
+//   Card.findOne({cardId:cardId},function(err,card){
+//     card.image.data=fs.readFileSync(imgSrc);
+//     card.image.contentType = 'image/png';
+//   })
+// }
+
+exports.addImage=function(cardId,fname){
+  Card.findOneAndUpdate({cardId:cardId},{$set:
+    {
+      image:fname
+    }
+  },function(err,card){
+    console.log(err);
   })
 }

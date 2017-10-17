@@ -19,6 +19,10 @@ numberOfCards:{
 },
 firstname: String,
 lastname: String,
+profilePic: {
+  type:String,
+  default:null
+},
   local: {
     email: {
       type:String,

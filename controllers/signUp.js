@@ -2,6 +2,27 @@
  * Module dependencies.
  */
 // var flash = require('connect-flash');
+var multer=require('multer');
+var fs=require('fs-extra');
+var userMethods=require('../models/userMethods')
+var Storage = multer.diskStorage({
+    destination:(req, file, callback) => {
+      console.log("in multer");
+      var type=req.params.type;
+      var path=`./app/Images`;
+      fs.mkdirsSync(path)
+        callback(null,path);
+    },
+    filename: function (req, file, callback) {
+      // console.log(null, file.fieldname + "_" + Date.now() + "_" + req.body.cardId);
+      var fname=req.query.userId+"."+file.mimetype.slice(6,11);
+      console.log(fname);
+      userMethods.addProfilePic(req.query.userId,fname)
+      callback(null, fname);
+    }
+});
+var upload = multer({ storage: Storage}).array("imgUploader",3); //Field name and max count
+
 var redis = require('redis');
 var redisClient = redis.createClient();
 var nodemailer = require("nodemailer");
@@ -39,6 +60,20 @@ module.exports = function(app, passport) {
     })
     app.get('/signupSuccess',function(req,res){
       res.json({"result":"signupsuccess"})
+    })
+    //changeProfilePic
+    app.post('/changeProfilePic',function(req,res){
+      console.log("change profile pic");
+      upload(req, res, function (err) {
+          if (err) {
+            console.log("Something went wrong!");
+              // return res.end("Something went wrong!");
+          }
+          else{
+            console.log("File uploaded sucessfully!.");
+             res.redirect('/profile')
+          }
+      })
     })
 //chk given mail id is registered and send otp
   app.post('/forgotPassword', function(req, res) {

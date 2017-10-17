@@ -74,7 +74,7 @@ module.exports = function(app, io, userMethods, cardMethods, schedule, notifier)
 
         }
         // //sending stored cards to client side
-        console.log(dashBoard,archived,pinned,trashList);
+        // console.log(dashBoard,archived,pinned,trashList);
                   socket.emit('showCards', dashBoard,archived,pinned,trashList);
       })
 

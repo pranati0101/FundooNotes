@@ -905,7 +905,7 @@ h2.title {
 .sidebar .sidebar-wrapper,
 .perfect-scrollbar-on .main-panel,
 .main-panel {
-    overflow: hidden;
+    overflow: auto;
 }
 
 .perfect-scrollbar-off .sidebar .sidebar-wrapper,
@@ -2372,6 +2372,11 @@ fieldset[disabled] .navbar .navbar-nav>li>a.btn.btn-rose.active {
 body {
     background-color: #EEEEEE;
     color: #3C4858;
+}
+
+.cardImage{
+  max-width: 20;
+  max-height: 20;
 }
 
 body.inverse {
@@ -5077,6 +5082,7 @@ footer .btn {
     border-radius: 3px;
     color: rgba(0, 0, 0, 0.87);
     background: #fff;
+    overflow:auto;
 }
 .card-footer{
   display:block;

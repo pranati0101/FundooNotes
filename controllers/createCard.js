@@ -1,7 +1,33 @@
 /**
  * Module dependencies.
  */
-module.exports=function(app,fs,cardMethods){
+ var multer=require('multer');
+ var fs=require('fs-extra');
+ var cardMethods=require('../models/cardMethods')
+ var Storage = multer.diskStorage({
+     destination:(req, file, callback) => {
+       console.log("in multer");
+       var type=req.params.type;
+       var path=`./app/Images`;
+       fs.mkdirsSync(path)
+         callback(null,path);
+     },
+     filename: function (req, file, callback) {
+       // console.log(null, file.fieldname + "_" + Date.now() + "_" + req.body.cardId);
+       var fname=file.fieldname + "_" +req.query.cardId+"."+file.mimetype.slice(6,11);
+       console.log(fname);
+       cardMethods.addImage(req.query.cardId,fname)
+       callback(null, fname);
+
+
+     }
+ });
+ var upload = multer({ storage: Storage}).array("imgUploader",3); //Field name and max count
+
+module.exports=function(app,cardMethods){
+
+
+
 
 /*-----logic for different api----*/
 //new card is created
@@ -18,10 +44,16 @@ module.exports=function(app,fs,cardMethods){
   })
   //image is saved
   app.post('/addImage',function(req,res){
-  console.log(req.body);
-  cardMethods.addImage(fs,req.body.cardId,req.body.imgSrc,function(err,result){
-    if(err) console.log(err);
-    res.send('200')
+  console.log("in add Image");
+  upload(req, res, function (err) {
+      if (err) {
+        console.log("Something went wrong!");
+          // return res.end("Something went wrong!");
+      }
+      else{
+        console.log("File uploaded sucessfully!.");
+         res.redirect('/profile')
+      }
   })
   })
 //card is deleteCard

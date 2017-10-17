@@ -27,8 +27,8 @@ image:{
   default:null
 },
 image:{
-  data:Buffer,
-  contentType:String
+  type:String,
+  default:null
   },
 color:{
   type:String,
@@ -57,11 +57,7 @@ lastModified:{
 reminder:{
   date:{
     type:Number,
-    default:-1,
-    status:{
-      type:Boolean,
-      default:false
-    }
+    default:-1
   },
   month:{
     type:Number,
@@ -83,9 +79,9 @@ reminder:{
     type:Number,
     default:-1
   },
-  job:{
-    type:Object,
-    default:null
+  status:{
+    type:Boolean,
+    default:false
   }
 },
 collaborator:{

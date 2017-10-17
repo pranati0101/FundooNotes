@@ -19,6 +19,7 @@ html
     //- link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css")
     link(rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css")
+    link(rel="stylesheet" href="../css/croppie.css")
     //- link(rel="stylesheet" href="../css/card.css")
     script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
     //- /*script(src='https://code.jquery.com/jquery-1.12.4.js')*/
@@ -45,6 +46,8 @@ html
     script(src="../assets/js/material-dashboard.js")
     script(src="../assets/js/demo.js")
     script(type="text/javascript" src="../js/profile.js")
+    script(type="text/javascript" src="../js/profilePic.js")
+    script(type="text/javascript" src="../js/croppie.js")
   body
     nav(class="navbar")
         div(class="container-fluid" style="background-color: #f7f2f0 ")
@@ -69,10 +72,18 @@ html
               li
                 div(class="dropdown")
                   a(href="" id="person-info" class="dropdown-toggle" data-toggle="dropdown")
-                    i(class="material-icons") person
+                    img(src
+                      =
+                      user.profilePic 
+                       width="50" height="50" alt="img" class="img-responsive img-thumbnail img-circle")
                     div(class="hidden-lg hidden-md" style="display:inline-block") Profile
                   div(class="dropdown-menu")
                     div
+                      a(data-toggle="modal" data-target="#changeProfilePic")
+                        img(src
+                          =
+                          user.profilePic
+                           width="50" height="50" alt="img" class="img-responsive img-thumbnail img-circle")
                       input(style="border-style:none" value
                         =
                           user.firstname+" "+user.lastname
@@ -125,12 +136,17 @@ html
             div(class="row" id="pinned")
             div(class="row" id="cardListLabel")
             div(class="row" id="cardList")            
-          div(id="myModal" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
-              div(class="modal-header")
-                button(type="button" class="close" data-dismiss="modal" aria-hidden="true") ×
-              div(class="modal-body")
-              div(class="modal-footer")
-                button(class="btn" data-dismiss="modal" aria-hidden="true") Close
-                button(class="btn btn-primary") Save changes
-
+            div(class="modal fade" id="changeProfilePic" role="dialog")
+              div(class="modal-dialog")
+                //-<!-- Modal content-->
+                div(class="modal-content")
+                  div(class="modal-body")
+                    form(class="form-group" enctype="multipart/form-data" method="POST" action="/changeProfilePic")
+                      input(type="file" multiple id="filename")
+                      div(class="profilePic")
+                      button(type="submit" class="btn btn-default") Done
+                  div(class="modal-footer")
+                    //-cancel button in footer -->  
+                    button(type="button" class="btn btn-default" id="uploadCrop") Submit          
+                    button(type="button" class="btn btn-default" data-dismiss="modal") Cancel
     script(src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js")      
