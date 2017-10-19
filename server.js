@@ -51,11 +51,12 @@ require('./controllers/controllerHome.js')(app,passport);
 require('./controllers/loginController.js')(app,passport);
 require('./controllers/signUp.js')(app,passport);
 require('./controllers/createCard.js')(app,cardMethods);
-require('./controllers/showCards.js')(app);
+require('./controllers/addPerson.js')(app,cardMethods);
 require('./controllers/cardReminder.js')(app,schedule,notifier,Card,cardMethods)
 require('./controllers/socket.js')(app, io, userMethods, cardMethods, schedule, notifier)
 require('./controllers/Trash.js')(app,cardMethods)
 require('./controllers/Archive.js')(app,cardMethods)
+require('./controllers/search.js')(app,cardMethods)
 // require('./controllers/socket')(app,io,cardMethods,schedule,notifier)
 //listening at port PORT
 http.listen(4000, function() {

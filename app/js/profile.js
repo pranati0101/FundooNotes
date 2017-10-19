@@ -39,21 +39,11 @@ $(document).on('click','a.popoverReminder',function(){
 
     document.getElementById('cardList').innerHTML=' ';
     var userId=document.getElementById('space').value;
+    var userEmail=document.getElementById('mail').value;
     console.log(userId);
     socket = io.connect('http://localhost:4000');
-    socket.emit('getUserInfo',userId);
-    socket.on('setUserInfo',function(data){
-      console.log(data);
-    //   $("#person-info").popover({
-    //     placement: 'bottom',
-    //     html: 'true',
-    //     title : '<b>'+data.firstname+' '+data.lastname+'</b><div>'+data.email+'</div>',
-    //     content : '<button type="button" id="close" class="close" onclick="$(&quot;#example&quot;).popover(&quot;hide&quot;);">&times;</button>'+
-    //               '<a href="/logout"> Logout</a>'
-    // });
-    })
-    socket.emit('reminder',userId);
-
+    socket.emit('reminder',userId,userEmail);
+    socket.emit('initElasticSearchIndex',userId)
     socket.on('showCards',function(dashBoard,archived,pinned,trash){
       console.log("printing cards");
       // console.log(dashBoard,archived,pinned,trash);
@@ -128,7 +118,8 @@ function appendCard(title,text,cardId,divId){
           "Last modified on"+"<div><div id='footerButtons'>"+
           "<a class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>"+
           '<a><i class="material-icons" onclick="moveToArchive(\'' + cardId + '\')">archive</i></a>&nbsp'+
-          '<a><i class="material-icons" onclick="addCollaborator(\'' + cardId + '\')">person_add</i></a>&nbsp'+
+          '<div class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><i class="material-icons">person_add</i></a>'+
+          '<div class="dropdown-menu"><form method="POST" action="/addPerson?cardId="'+cardId+'><input type="text" placeholder="Enter email id.." name="personEmail"><br><button type="submit" class="btn btn-primary">Add</button></form></div></div>&nbsp'+
           '<a><i class="material-icons" onclick="addColor(\'' + cardId + '\')">color_lens</i></a>&nbsp'+
           '<div class="dropdown"><a data-toggle="dropdown"><i class="material-icons">insert_photo</i></a><ul class="dropdown-menu">'+
           '<form id="frmUploader" enctype="multipart/form-data" action="/addImage?cardId='+cardId+'" method="post">'+

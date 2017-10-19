@@ -120,7 +120,7 @@ module.exports = function(passport) {
       process.nextTick(function() {
       console.log("profile,info",profile);
         // try to find the user based on their google id
-      userMethods.searchUser(0,0,profile.id,function(err,user){
+      userMethods.searchUser(profile.emails[0].value,0,profile.id,function(err,user){
       // if there is an error, stop everything and return that
       // ie an error connecting to the database
       if (err)

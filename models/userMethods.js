@@ -15,8 +15,9 @@ exports.searchById = function(id, done) {
 };
 //add profilePic
 exports.addProfilePic=function(id,fname){
+  console.log("changing image");
 User.findOneAndUpdate({userId:id},{$set:{
-  profilePic:fname
+  profilePic:"../Images/"+fname
 }},function(err,info){
   console.log(err);
 })
@@ -26,7 +27,6 @@ exports.getUserInfo=function(userId,done){
   User.findOne({'userId':userId},function(err,userInfo){
     if(err) done(err,null);
     else{
-      console.log("in db methods",userInfo);
       info={
         firstname:userInfo.firstname,
         lastname:userInfo.lastname,

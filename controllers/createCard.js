@@ -38,6 +38,15 @@ module.exports=function(app,cardMethods){
       else{
           // userMethods.upadteNumberOfCards(req.user._id,1);
           console.log(card);
+          // esClient.index({
+          //    index: indexName,
+          //    type: "info",
+          //    body: document,
+          //    refresh:true
+          //     },function(err,res){
+          //          if(err) console.log(err);
+          //          console.log(res);
+          //        });
           res.json(card);
       }
     })

@@ -15,13 +15,13 @@ var Storage = multer.diskStorage({
     },
     filename: function (req, file, callback) {
       // console.log(null, file.fieldname + "_" + Date.now() + "_" + req.body.cardId);
-      var fname=req.query.userId+"."+file.mimetype.slice(6,11);
-      console.log(fname);
-      userMethods.addProfilePic(req.query.userId,fname)
-      callback(null, fname);
+      var filename=req.user._id+"."+file.mimetype.slice(6,11);
+      console.log(filename);
+      userMethods.addProfilePic(req.user._id,filename)
+      callback(null, filename);
     }
 });
-var upload = multer({ storage: Storage}).array("imgUploader",3); //Field name and max count
+var upload = multer({ storage: Storage}).array("fname",1); //Field name and max count
 
 var redis = require('redis');
 var redisClient = redis.createClient();
@@ -66,6 +66,7 @@ module.exports = function(app, passport) {
       console.log("change profile pic");
       upload(req, res, function (err) {
           if (err) {
+            console.log(err);
             console.log("Something went wrong!");
               // return res.end("Something went wrong!");
           }

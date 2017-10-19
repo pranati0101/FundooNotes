@@ -26,12 +26,25 @@ exports.createCard = function(data, id, callback) {
     }
   });
 }
-
-//search card by _id
-exports.getCardById = function(id, callback) {
-  Card.findById(id, function(err, card) {
-    callback(err, card);
+//add collaborator
+exports.addPerson=function(id,mail,callback){
+  Card.findOneAndUpdate({cardId:id},{$set:{
+    collaborator:mail
+  }},function(err,res){
+    if(err) console.log(err);
+    else {
+      callback(null,'done')
+    }
   })
+}
+//search card by _id
+exports.getCardById = function(id) {
+return new Promise(function(resolve,reject){
+  Card.findById(id, function(err, card) {
+    if(err) reject(err);
+    else resolve(card);
+  })
+})
 };
 //get reminder status
 exports.getReminderStatus = function(id, callback) {
@@ -64,8 +77,11 @@ exports.setReminder = function(data,id,callback) {
   })
 }
 //get all cards of particular user from db
-exports.getCards = function(id,callback) {
-  Card.find({userId:id},function(err,info){
+exports.getCards = function(id,userEmail,callback) {
+  Card.find({$or:{
+    userId:id,
+    collaborator:userEmail}
+},function(err,info){
     if(err) callback(err,null);
     else{
       callback(null,info)
