@@ -1,12 +1,7 @@
 /**
  * Module dependencies.
  */
-var fs = require('fs')
-var elasticsearch = require('elasticsearch');
-var esClient = new elasticsearch.Client({
-  host: '127.0.0.1:9200',
-  log: 'error'
-});
+var elasticsearch=require('./elasticSearch')
 var scheduleReminder = require('./scheduleReminder')
 module.exports = function(app, io, userMethods, cardMethods, schedule, notifier) {
   var cards = [];
@@ -23,7 +18,7 @@ module.exports = function(app, io, userMethods, cardMethods, schedule, notifier)
     dashBoard = [];
 
     //event for scheduling existing remiinders and showing notes
-    socket.on('reminder', function(userId) {
+    socket.on('reminder', function(userId,userEmail) {
       // console.log("in reminder event, getting cards---",userId);
       cardMethods.getCards(userId,userEmail, function(err, card) {
         cards = card;
@@ -86,85 +81,13 @@ module.exports = function(app, io, userMethods, cardMethods, schedule, notifier)
     //check whether elastic search index is present or not
     //if not create new index with userid as indexname;
     socket.on('initElasticSearchIndex', function(userId) {
-      indexExists(userId, function(status) {
-        if (status) {
-          console.log("deleting old index");
-          esClient.indices.delete({
-            index: userId
-          })
-          console.log("creating new index");
-          esClient.indices.create({
-            index: userId
-          })
-          for (i in cards){
-            values={
-              title:cards[i].title,
-              text:cards[i].text,
-              color:cards[i].color,
-              collaborator:cards[i].collaborator,
-              cardId:cards[i].cardId,
-              pinned:cards[i].pinned,
-              image:cards[i].image
-            }
-            addDocument(userId,values)
-          }
-        }
-        else{
-          console.log("creating new index");
-          esClient.indices.create({
-            index: userId
-          },function(err){
-            if(err) console.log(err);
-            for (i in cards){
-              values={
-                title:cards[i].title,
-                text:cards[i].text,
-                color:cards[i].color,
-                collaborator:cards[i].collaborator,
-                cardId:cards[i].cardId,
-                pinned:cards[i].pinned,
-                image:cards[i].image
-              }
-              addDocument(userId,values)
-            }
-          })
-
-        }
-
-      })
-
+      console.log(userId,cards,"in socket");
+      elasticsearch.initElasticSearchIndex(userId,"cards",cards,null);
+      
 
     })
   });
-
-
 }
-
-function indexExists(indexName, callback) {
-  esClient.indices.exists({
-    index: indexName
-  }, function(err, res) {
-    if (err) console.log("error--", err);
-    console.log("status--", res);
-    callback(res);
-  });
-}
-
-
-
-function addDocument(indexName, document) {
-   esClient.index({
-    index: indexName,
-    type: "info",
-    body: document,
-    refresh:true
-  },function(err,res){
-    if(err) console.log(err);
-    console.log(res);
-  });
-}
-
-
 //add days
 function addDays(date, days) {
   var result = new Date(date);

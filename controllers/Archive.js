@@ -20,10 +20,8 @@ module.exports=function(app,cardMethods){
   //card is sent to trash
   app.get('/moveToArchive',function(req,res){
     cardMethods.moveToArchive(req.query.cardId,function(err,response){
-      console.log(response);
       if(err) console.log(err);
-      else if(response) res.send('done');
-      else res.send('404')
+      else res.redirect('/profile')
     })
   })
 
@@ -32,8 +30,7 @@ module.exports=function(app,cardMethods){
     cardMethods.unarchive(req.query.cardId,function(err,response){
       console.log(response);
       if(err) console.log(err);
-      else if(response) res.send('done');
-      else res.send('404')
+      else res.redirect('/showArchive')
     })
   })
 

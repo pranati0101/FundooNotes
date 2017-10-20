@@ -55,12 +55,13 @@ module.exports=function(app){
   })
 
   app.get('/profile',function(req,res){
+    console.log("in profile..",req.user);
     if(req.user){
       res.render('profile.pug',{user:req.user});
     }
     else{
-      res.redirect('/')
+        console.log("user not found"); //
+        res.redirect('/')
     }
-      console.log(" Profile");
   })
 }

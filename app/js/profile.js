@@ -51,14 +51,14 @@ $(document).on('click','a.popoverReminder',function(){
       if(pinned.length>0){
           document.getElementById('pinnedLabel').innerHTML+='PINNED';
         for (i=0;i<pinned.length;i++) {
-          appendCard(pinned[i].title,pinned[i].text,pinned[i].cardId,'pinned')
+          appendCard(pinned[i].title,pinned[i].text,pinned[i].cardId,'pinned',pinned[i].color)
         }
         document.getElementById('cardListLabel').innerHTML+='OTHERS';
       }
 
       if(dashBoard.length>0){
         for(i=0;i<dashBoard.length;i++){
-          appendCard(dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList')//.then(function(){
+          appendCard(dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)//.then(function(){
             if(dashBoard[i].image != null)
             {
               var img = document.createElement("IMG");
@@ -83,79 +83,33 @@ $(document).on('click','a.popoverReminder',function(){
 
   })
 
-function createCard(){
-  console.log("here");
-  var title = document.getElementById('cardTitle').innerText;
-  var text = document.getElementById('cardText').innerText;
-  $.ajax({
-      url: '/createCard',
-      type: 'POST',
-      dataType: "JSON",
-      data: {
-        "title": title,
-        "text":text
-      }
-    }).fail(function(){
-      alert("Error");
-    }).done(function(result) {
-      console.log(result);
-      appendCard(title,text,result.cardId,'cardList')
-  })
-}
-
 //function to print cards
-function appendCard(title,text,cardId,divId){
+function appendCard(title,text,cardId,divId,color){
   if(divId=='pinned')
     url='../icons/pinned.svg'
   else url='../icons/pin.svg'
   imgSrc=""
-  document.getElementById(divId).innerHTML+="<div class='col-md-4' id='"+cardId+"'><div class='card'>"+
+  document.getElementById(divId).innerHTML+="<div class='col-md-4' id='"+cardId+"'><div class='card' style='background-color:"+color+"'>"+
          '<a href="pin?cardId='+cardId +'"><img src='+url+' style="float:right" alt="pin" id="pinIcon"/></a>'+
         //  "<div class='cardImage'> </div>"+
-          "<div class='cardImage'></div><div class='card-content'><br><h4 class='title'><p contentEditable='true'>"+title+"</h4><span class='text-success'>"+
-          "<p contentEditable='true'>"+text+"</span>"+"</div>"+
+          "<div class='cardImage'></div><div class='card-content'><form method='POST' action='/updateCard?cardId="+cardId+"'><h4 class='title'><input name='title' style='border-style:none' value='"+title+"'></h4><span class='text-success'>"+
+          "<input name='text' style='{background-color:"+color+",border-style:none}' value='"+text+"'></span><button type='submit' class='btn btn-primary'>Update</button></form>"+"</div>"+
           "<div class='card-footer'><div><i class='material-icons'>access_time</i>"+
           "Last modified on"+"<div><div id='footerButtons'>"+
           "<a class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>"+
-          '<a><i class="material-icons" onclick="moveToArchive(\'' + cardId + '\')">archive</i></a>&nbsp'+
+          '<a href="/moveToArchive?cardId='+cardId+'"><i class="material-icons" >archive</i></a>&nbsp'+
           '<div class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><i class="material-icons">person_add</i></a>'+
-          '<div class="dropdown-menu"><form method="POST" action="/addPerson?cardId="'+cardId+'><input type="text" placeholder="Enter email id.." name="personEmail"><br><button type="submit" class="btn btn-primary">Add</button></form></div></div>&nbsp'+
-          '<a><i class="material-icons" onclick="addColor(\'' + cardId + '\')">color_lens</i></a>&nbsp'+
+          '<div class="dropdown-menu"><form method="POST" action="/addPerson?cardId='+cardId+'"><input type="text" placeholder="Enter email id.." name="personEmail"><br><button type="submit" class="btn btn-primary">Add</button></form></div></div>&nbsp'+
+          '<div class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><i class="material-icons">color_lens</i></a><ul class="dropdown-menu">'+
+          '<li><a href="/changeColor?color=blue&cardId='+cardId+'"><img class="img-circle" src="../Images/blue.png" height="20px" width="20px"</a></li>'
+          ''+
+          '</ul></div>&nbsp'+
           '<div class="dropdown"><a data-toggle="dropdown"><i class="material-icons">insert_photo</i></a><ul class="dropdown-menu">'+
           '<form id="frmUploader" enctype="multipart/form-data" action="/addImage?cardId='+cardId+'" method="post">'+
         '<input name="imgUploader" type="file" id="imgSrc" multiple/><input type="submit"></input></form></ul></div>'+
-          '<a><i class="material-icons" onclick="moveToTrash(\'' + cardId + '\')">delete</i></a>&nbsp'+
+          '<a href="/moveToTrash?cardId='+cardId+'"><i class="material-icons">delete</i></a>&nbsp'+
           "</div></div><div>"
 }
-// function insertImage(event){
-//   // var elem=($(event.target).closest('#footerButtons').find('#frmUploader'));
-//   // console.log(elem.find('#imgSrc').val());
-//   // var imgDiv=$(event.target).closest('#cardImage');
-//   // var img = document.createElement("IMG");
-//   //   img.src = ;
-//   //   imgDiv.appendChild(img);                  //.find('#imgSrc').val());
-// }
-// <form id="frmUploader" enctype="multipart/form-data" action="api/Upload/" method="post">
-//     <input type="file" name="imgUploader" multiple />
-//     <input type="submit" name="submit" id="btnSubmit" value="Upload" />
-// </form>
-//sending card to archive
-// function loadScript(){
-//   console.log("1");
-//     $('.popoverReminder').popover({
-//       html: true,
-//       title:'<input type="text" class="datepicker"><br><input type="text" class="timepicker">',
-//       content:'<button type="submit" onclick="setReminder()"> Submit'
-//     },function(err,res){
-//       console.log("loading..");
-//     });
-//     $('.popoverReminder').on('shown.bs.popover', function () {
-//
-//       $('.datepicker').datepicker();
-//       $('.timepicker').timepicker();
-//     })
-// }
-
 function moveToArchive(cardId){
   console.log("archiving..!!");
   $.ajax({
@@ -178,35 +132,10 @@ function moveToTrash(cardId){
   }).done(function(response){
     if(response=='done'){
         elem=document.getElementById(cardId);
-        // elem.parentNode.removeChild(elem);
         elem.remove()
     }
     else alert("Error");
   })
-}
-function addCollaborator(){
-
-}
-function addColor(){
-
-}
-function addImage(event){
-  var imgSrc=document.getElementById("imgSrc").value;
-  console.log(imgSrc);
-  var input=event.target;
-  console.log(typeof(input.files[0]));
-  // $.ajax({
-  //   url:"/addImage",
-  //   type:"POST",
-  //   data:{
-  //     imgSrc:imgSrc,
-  //     cardId:cardId
-  //   }
-  // }).done(function(response){
-  //   console.log(response);
-  // }).fail(function(){
-  //   alert("Error");
-  // })
 }
 
 function openModal(cardId){
@@ -216,31 +145,4 @@ function openModal(cardId){
   $('#openModal').modal('toggle');
   $('#openModal').modal('show');
   document.getElementById('cid').value=cardId;
-}
-//set Reminder
-function setReminder(){
-  console.log("herer");
-  console.log();
- // date=document.getElementById('datepicker').value;
- // time=document.getElementById('timepicker').value;
- // cardId=document.getElementById('cid').value;
- // var values={
- //   date:date.substr(0,2),
- //   month:date.substr(3,2),
- //   year:date.substr(6,4),
- //   hours:time.substr(0,2),
- //   minutes:time.substr(3,2),
- //   seconds:time.substr(6,2),
- //   cardId:cardId
- // }
- // console.log(values);
- // $.ajax({
- //   url:'/setReminder',
- //   method:'POST',
- //   dataType:'JSON',
- //   data:values
- // }).done(function(err,res){
- //   if(err) console.error();
- //   console.log(res);
- // })
 }

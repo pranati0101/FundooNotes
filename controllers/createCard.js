@@ -47,7 +47,17 @@ module.exports=function(app,cardMethods){
           //          if(err) console.log(err);
           //          console.log(res);
           //        });
-          res.json(card);
+          res.redirect("/profile");
+      }
+    })
+  })
+  //update card
+  app.post('/updateCard',function(req,res){
+    cardMethods.updateCard(req.body,req.query.cardId,function(err){
+      if(err) console.error();
+      else{
+        console.log("redirecting to profile",req.user);
+        res.redirect('/profile')
       }
     })
   })
@@ -75,5 +85,12 @@ module.exports=function(app,cardMethods){
       }
     })
   });
+
+  app.get('/changeColor',function(req,res){
+    cardMethods.changeColor(req.query.cardId,req.query.color,function(err,resp){
+      if(err) console.log(err);
+      else res.redirect('/profile')
+    })
+  })
 
 }

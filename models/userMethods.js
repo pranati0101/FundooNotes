@@ -37,6 +37,13 @@ exports.getUserInfo=function(userId,done){
 
   })
 }
+//get mailIds stored in database
+exports.getMailIds=function(callback){
+  User.find({},function(err,info){
+    if(err) callback(err,null)
+    else callback(null,info);
+  })
+}
 //search user by email or google id or facebook id
 exports.searchUser = function(email, fb, google, done)
  {

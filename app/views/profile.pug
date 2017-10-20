@@ -48,6 +48,7 @@ html
     script(type="text/javascript" src="../js/profile.js")
     script(type="text/javascript" src="../js/profilePic.js")
     script(type="text/javascript" src="../js/croppie.js")
+    script(type="text/javascript" src="../js/autocomplete.js")
   body
     nav(class="navbar")
         div(class="container-fluid" style="background-color: #f7f2f0 ")
@@ -99,7 +100,7 @@ html
                     a(href="/logout") Logout
             form(class="navbar-form navbar-right" method="POST" action="/search")
                   div(class="form-group  is-empty")
-                    input(type="text" name="text" class="form-control" placeholder="Search")
+                    input(type="text" name="text" id="stext" autocomplete="off" class="form-control" placeholder="Search")
                     span(class="material-input")
                       button(type="submit" class="btn btn-white btn-round btn-just-icon")
                         i(class="material-icons") search
@@ -126,13 +127,11 @@ html
       div(class="main-panel" id="mainPanel")
         div(class="row" id='createCards')
           div(class="col-md-4")
-            div(class="card")
-              div(class="title" contentEditable="true" id="cardTitle" placeholder="Enter title...")
-                b Enter Title..
-              div(class='text-success' id="cardText" contentEditable="true" placeholder="Enter text..")
-                p Enter text...
+            form(class="card" method="POST" action="createCard")
+              input(class="title" name='title' style="border-style:none" id="cardTitle" placeholder="Enter title...")
+              input(class='text-success' name='text' id="cardText" style="border-style:none" placeholder="Enter text..")
               div(class="card-footer" id="createCardsFooter")
-                button(align="right" type="submit" class="btn btn-white btn-round btn-just-icon" onclick="createCard()")
+                button(align="right" type="submit" class="btn btn-white btn-round btn-just-icon")
                   i(class="material-icons") add
         div(class="content")
           div(class="container-fluid")

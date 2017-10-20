@@ -26,6 +26,17 @@ exports.createCard = function(data, id, callback) {
     }
   });
 }
+//exports change color
+exports.changeColor=function(id,color,callback){
+  Card.findOneAndUpdate({cardId:id},{$set:{
+    color:color
+  }},function(err,res){
+    if(err) callback(err,null)
+    else {
+      callback(null,'done')
+    }
+  })
+}
 //add collaborator
 exports.addPerson=function(id,mail,callback){
   Card.findOneAndUpdate({cardId:id},{$set:{
@@ -78,9 +89,9 @@ exports.setReminder = function(data,id,callback) {
 }
 //get all cards of particular user from db
 exports.getCards = function(id,userEmail,callback) {
-  Card.find({$or:{
-    userId:id,
-    collaborator:userEmail}
+  Card.find({$or:[
+    {userId:id},
+    {collaborator:userEmail}]
 },function(err,info){
     if(err) callback(err,null);
     else{
@@ -94,6 +105,16 @@ exports.deleteCard=function(id,callback){
     if(err) callback(err,null);
     else callback(null)
     console.log(res);
+  })
+}
+//delete a card
+exports.updateCard=function(data,id,callback){
+  Card.findOneAndUpdate({cardId:id},{$set:{
+    title:data.title,
+    text:data.text
+  }},function(err,res){
+    if(err) callback(err,null);
+    else callback(null)
   })
 }
 //move to trash

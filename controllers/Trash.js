@@ -3,7 +3,7 @@ module.exports=function(app,cardMethods){
   //cards in trash are fetched and sent to front end
   app.get('/showTrash',function(req,res){
     console.log("in trash",req.user);
-    cardMethods.getCards(req.user.userId,function(err,cards){
+    cardMethods.getCards(req.user.userId,req.user.local.email,function(err,cards){
       if(err) console.log(err);
       else{
         var trashList=[]
@@ -22,8 +22,7 @@ module.exports=function(app,cardMethods){
     cardMethods.moveToTrash(req.query.cardId,function(err,response){
       console.log(response);
       if(err) console.log(err);
-      else if(response) res.send('done');
-      else res.send('404')
+      else res.redirect('/profile')
     })
   })
 
@@ -33,7 +32,7 @@ module.exports=function(app,cardMethods){
         if(err) console.error();
         else{
             // userMethods.upadteNumberOfCards(req.user._id,-1);
-            res.send(true);
+            res.redirect('/showTrash');
         }
       })
     });

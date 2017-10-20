@@ -29,6 +29,7 @@ html
     script(type="text/javascript" src="../js/searchCard.js")
     script(type="text/javascript" src="../js/profilePic.js")
     script(type="text/javascript" src="../js/croppie.js")
+    script(type="text/javascript" src="../js/autocomplete.js")
   body
     nav(class="navbar")
         div(class="container-fluid" style="background-color: #f7f2f0 ")
@@ -75,11 +76,10 @@ html
                         )
                     a(href="/logout") Logout
             form(class="navbar-form navbar-right" method="POST" action="/search")
-                  div(class="form-group  is-empty")
-                    input(type="text" name="text" class="form-control" placeholder="Search")
-                    span(class="material-input")
-                      button(type="submit" class="btn btn-white btn-round btn-just-icon")
-                        i(class="material-icons") search
+              input(type="text" id="stext" autocomplete="off" name="text" class="form-control" placeholder="Search")
+              span(class="material-input")
+                button(type="submit" class="btn btn-white btn-round btn-just-icon")
+                  i(class="material-icons") search
     div(class="wrapper")
       div(class="sidebar")
         div(class="sidebar-wrapper" id="sideBar")
