@@ -3,7 +3,7 @@ module.exports=function(app,cardMethods){
   //cards in trash are fetched and sent to front end
   app.get('/showArchive',function(req,res){
     console.log("in Archive",req.user);
-    cardMethods.getCards(req.user.userId,function(err,cards){
+    cardMethods.getCards(req.user.userId,null,function(err,cards){
       if(err) console.log(err);
       else{
         var archiveList=[]

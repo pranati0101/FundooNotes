@@ -178,7 +178,7 @@ createIndex=function(indexName,typeName){
 */
 initIndex=function(indexName,typeName,cards,emailids) {
 return new Promise(function(resolve, reject) {
-    console.log("creating index");
+    // console.log("creating index");
     if(typeName=="cards"){
       createIndex(indexName,typeName).then(function(res){
         for(i=0;i<cards.length;i++){
@@ -191,7 +191,7 @@ return new Promise(function(resolve, reject) {
             pinned:cards[i].pinned,
             image:cards[i].image
           }
-            console.log("adding doc");
+            // console.log("adding doc");
             esClient.index({
                 index: indexName,
                 type: typeName,
@@ -207,7 +207,7 @@ return new Promise(function(resolve, reject) {
 else{
   createIndex(indexName,typeName).then(function(res){
     for(i=0;i<emailids.length;i++){
-        console.log("adding doc");
+        // console.log("adding doc");
         esClient.index({
             index: indexName,
             type: typeName,
@@ -237,8 +237,7 @@ exports.initElasticSearchIndex=function(indexName,typeName,cards,emailids){
 }
 
 exports.autocomplete=function (text,indexName,typeName,callback) {
-console.log("es func");
-console.log(typeof(indexName));
+console.log(text);
     esClient.search({
         index: indexName,
         type: typeName,
@@ -247,20 +246,22 @@ console.log(typeof(indexName));
             multi_match:{
                 query:text,
                 fields:['title','text','color','collaborator'],
+                type:"phrase",
                 minimum_should_match: 1,
                 fuzziness:2
             }
           }
         }
     }).then(function (res) {
+      console.log(res);
         var results = res.hits.hits.map(function(hit){
           // console.log(hit);
-          // console.log("hit source : "+JSON.stringify(hit._source));
+          console.log("hit source : "+JSON.stringify(hit._source));
             return hit._source.title;
         });
       callback(results);
     }).catch(function (err) {
-        console.log(err);
+        console.log("Error->",err);
       });
 }
 /*

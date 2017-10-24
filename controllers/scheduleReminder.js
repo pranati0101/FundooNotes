@@ -16,9 +16,10 @@ cardMethods.setReminder(data,data.cardId,function(err,res){
   }
 //rescheduling reminders
 exports.resetReminder=function(schedule,notifier,cardMethods,data,callback){
-  var date=new Date((parseInt(data.year),(data.month),(data.date),(data.hours),(data.minutes),(data.seconds)));
+  console.log(data);
+  var date=new Date(parseInt(data.year),(data.month),(data.date),(data.hours),(data.minutes),(data.seconds));
     // var date=new Date(2017,9,16,12,37,0)
-  console.log("date: ",date);
+  console.log("date: ",date.toString());
   console.log(typeof(parseInt(data.year)));
   schedule.rescheduleJob(data.cardId,date);
   console.log("rescheduled");
@@ -53,7 +54,7 @@ function task(cardId,title,notifier,cardMethods){
     title: 'Reminder',
     message:title,
     wait: true // Wait with callback, until user action is taken against notification
-  }).done(function(){
+  })
         console.log("Reminder..!!!");
         var value={
           date:-1,
@@ -67,5 +68,4 @@ function task(cardId,title,notifier,cardMethods){
               if(err) console.log(err);
               else console.log("done");
             })
-  })
 }

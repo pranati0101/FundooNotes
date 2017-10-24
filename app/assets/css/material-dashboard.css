@@ -609,6 +609,11 @@ h6,
     }
 }*/
 
+#footer-buttons-a{
+    color:$black-color;
+    text-decoration: none;
+}
+
 h2.title {
     margin-bottom: 30px;
 }

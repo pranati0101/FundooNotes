@@ -24,7 +24,7 @@ module.exports = function(app, io, userMethods, cardMethods, schedule, notifier)
         cards = card;
         if (err) console.error();
         else {
-          console.log("socket getting cards");
+          // console.log("socket getting cards");
           // chking each card for reminder
           for (i in card) {
             //if present in trash
@@ -66,7 +66,7 @@ module.exports = function(app, io, userMethods, cardMethods, schedule, notifier)
               scheduleReminder.setReminder(schedule, notifier, cardMethods, data,
                 function(err, res) {
                   if (err) console.error();
-                  else console.log("reminder scheduled!!");
+                  // else console.log("reminder scheduled!!");
                 })
             }
           }
@@ -81,9 +81,9 @@ module.exports = function(app, io, userMethods, cardMethods, schedule, notifier)
     //check whether elastic search index is present or not
     //if not create new index with userid as indexname;
     socket.on('initElasticSearchIndex', function(userId) {
-      console.log(userId,cards,"in socket");
+      // console.log(userId,cards,"in socket");
       elasticsearch.initElasticSearchIndex(userId,"cards",cards,null);
-      
+
 
     })
   });

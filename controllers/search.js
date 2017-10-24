@@ -28,7 +28,7 @@ app.post("/search",function(req,res){
 
 app.get("/autocomplete",function(req,res){
   console.log("auto-->",req.query.term);
-  elasticsearch.autocomplete(req.query.term,req.user.userId,function(results){
+  elasticsearch.autocomplete(req.query.term,req.user.userId,"cards",function(results){
     res.send(results)
     console.log("results",results);
   })

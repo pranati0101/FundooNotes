@@ -87,6 +87,7 @@ module.exports=function(app,cardMethods){
   });
 
   app.get('/changeColor',function(req,res){
+    console.log(req.query);
     cardMethods.changeColor(req.query.cardId,req.query.color,function(err,resp){
       if(err) console.log(err);
       else res.redirect('/profile')

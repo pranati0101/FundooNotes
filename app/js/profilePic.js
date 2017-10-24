@@ -25,26 +25,35 @@ if (input.files && input.files[0]) {
     basic.croppie('bind', {
       url: e.target.result
     });
-    basic.croppie('result', 'html').then(function(html){
-      console.log("html..",html);
-      image=($(html).find('img'));
-      var left=image.css("left");
-      var top=image.css("top");
-
-      $('#crop').on('click',function(event){
-        console.log("in crop");
-        console.log(left,top);
-        userProfilePic=$('.navbar-header').find('#userProfilePic');
-        $('.navbar-header').find('#userProfilePic').css({"left":left,"top":top})
+    $('#crop').on('click',function(event){
+      console.log("in crop");
+      basic.croppie('result', 'html').then(function(html){
+        console.log("html..",html);
+        div=$(html)//.find('.croppie-result');
+        image=$(html).find('img');
+        var width=div.css("width");
+        var height=div.css("height");
+        var left=image.css("left");
+        var top=image.css("top");
+        console.log(width,height,left,top);
+        userProfilePic=document.getElementById('userProfilePic');
+        console.log(userProfilePic);
+        // userProfilePic.style["top",top]
+        // console.log(typeof(top));
+        userProfilePic.style.setProperty("top",top);
+        userProfilePic.style.setProperty("left",left);
+        // userProfilePic.style.setProperty("width",width);
+        // userProfilePic.style.setProperty("height",height);
+        // $('.navbar-header').find('#userProfilePic').css({"width":width,"height":height,"left":left,"top":top})
         // $("#mydiv").position({
         //   of: $('#mydiv').parent(),
         //   my: 'left top',
         //   at: 'left top',
         //   offset: '50 100'
         // });
-       console.log(userProfilePic.css("left"));
-      })
-    });
+      //  console.log(userProfilePic.css("top"));
+      });
+    })
   }
   reader.readAsDataURL(input.files[0]);
 }

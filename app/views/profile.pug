@@ -14,8 +14,8 @@ html
     //- script(defer src="https://code.getmdl.io/1.3.0/material.min.js")
     link(rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css")
     link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons")
-    link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css")
-    link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.css")
+    //- link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css")
+    //- link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.css")
     //- link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css")
     link(rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css")
@@ -56,7 +56,7 @@ html
               span(id="sidebarCollapse" style="font-size:30px;cursor:pointer") &#9776; Fundoo Notes
               input(type="text" id='space' style="display:none" value
               =
-                user._id
+                user
               )
               input(type="text" id='mail' style="display:none" value
               =
@@ -77,10 +77,10 @@ html
               li
                 div(class="dropdown")
                   a(href="" id="person-info" class="dropdown-toggle" data-toggle="dropdown")
-                    img(id="userProfilePic" src
+                    img(id="userProfilePic" class="img-responsive img-circle" src
                       =
                       user.profilePic 
-                       width="50" height="50" alt="image" class="img-responsive img-thumbnail img-circle")
+                       width="50" height="50" alt="image")
                     div(class="hidden-lg hidden-md" style="display:inline-block") Profile
                   div(class="dropdown-menu")
                     div
@@ -88,16 +88,16 @@ html
                         img(src
                           =
                           user.profilePic
-                           width="50" height="50" alt="img" class="img-responsive img-thumbnail img-circle")
-                      input(style="border-style:none" value
+                           width="100" height="100" alt="img" class="img-responsive img-thumbnail img-circle")
+                      input(style="border-style:none;display:inline-block" value
                         =
                           user.firstname+" "+user.lastname
                           )
-                    input(style="border-style:none" value
-                      =
-                        user.local.email
+                      input(style="border-style:none" value
+                        =
+                          user.local.email
                         )
-                    a(href="/logout") Logout
+                      a(href="/logout") Logout
             form(class="navbar-form navbar-right" method="POST" action="/search")
                   div(class="form-group  is-empty")
                     input(type="text" name="text" id="stext" autocomplete="off" class="form-control" placeholder="Search")

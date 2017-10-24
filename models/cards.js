@@ -80,8 +80,8 @@ reminder:{
   }
 },
 collaborator:{
-  type:String,
-  default:'none'
+  type:[String],
+  default:null
 }
 });
 

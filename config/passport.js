@@ -118,7 +118,7 @@ module.exports = function(passport) {
       // make the code asynchronous
       // User.findOne won't fire until we have all our data back from Google
       process.nextTick(function() {
-      console.log("profile,info",profile);
+      // console.log("profile,info",profile);
         // try to find the user based on their google id
       userMethods.searchUser(profile.emails[0].value,0,profile.id,function(err,user){
       // if there is an error, stop everything and return that
