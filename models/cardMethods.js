@@ -69,7 +69,20 @@ exports.addPerson=function(id,mail,callback){
         if(err) callback(err,null);
         else callback(null,'done');
       })
-
+    }
+  })
+}
+//add collaborator
+exports.addURL=function(id,url,callback){
+  Card.findOne({cardId:id},function(err,res){
+    if(err) console.log(err);
+    else {
+      // console.log("found card",res);
+      res.url.push(url);
+      res.save(function(err){
+        if(err) callback(err,null);
+        else callback(null,'done');
+      })
     }
   })
 }

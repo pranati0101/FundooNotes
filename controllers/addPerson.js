@@ -1,7 +1,7 @@
 /**
  * Module dependencies.
  */
- var userMethods=require('../models/userMethods')
+var userMethods=require('../models/userMethods')
 module.exports=function(app,cardMethods){
 
 /*-----logic for different api----*/

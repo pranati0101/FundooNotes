@@ -25,6 +25,12 @@ image:{
   type:String,
   default:null
   },
+  url:{
+    [{
+      urlTitle
+    }],
+    default:null
+  },
 color:{
   type:String,
   default:"white"

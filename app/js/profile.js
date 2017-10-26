@@ -1,3 +1,45 @@
+/**
+ * converts div element into text on click on any card/note
+ * @return {[type]} [description]
+ */
+$(document).on('click','.card-content',function(){
+$('#updateCardModal').modal('toggle');
+$('#updateCardModal').modal('show');
+var title=$(this).find('.cardTitle').text();
+var text=$(this).find('.cardText').text();
+var elem=$(this).closest('.col-md-4');
+var id=$(elem).attr('id');
+$('#updateCardModal').on('shown.bs.modal',function(){
+  $('#title').attr('value',title);
+  $('#text').attr('value',text);
+  $('#updateContentForm').attr('action','/updateCard?cardId='+id);
+})
+
+})
+
+ /**
+  * chks for any link present in text content and converts into clickable link
+  * uses regex to chk for any string in url form
+  * @return {string} []
+  */
+ function convert(text)
+    {
+    if(text==null)  return text;
+	  var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,;.]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	  var text1=text.replace(exp, "<a target='_blank' href='$1'>$1</a>");
+	  var exp2 =/(^|[^\/])(www\.[\S]+(\b|$))/gim;
+
+    var expr=/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/ig
+    var val=expr.exec(text)//www.nitjsr.ac.in ghghj")
+    console.log(val);
+
+
+    return (text1.replace(exp2, '$1<a target="_blank" href="http://$2">$2</a>'))
+    }
+/**
+ * [description]
+ * @return {[type]} [description]
+ */
 $(document).on('click','a.popoverReminder',function(){
   $(this).popover({
     html: true,
@@ -50,7 +92,7 @@ $(document).on('click','a.popoverReminder',function(){
     socket.emit('reminder',userId,userEmail);
     socket.emit('initElasticSearchIndex',userId)
     socket.on('showCards',function(dashBoard,archived,pinned,trash){
-      console.log("printing cards");
+      // console.log("printing cards");
       // console.log(dashBoard,archived,pinned,trash);
 
       if(pinned.length>0){
@@ -63,6 +105,7 @@ $(document).on('click','a.popoverReminder',function(){
 
       if(dashBoard.length>0){
         for(i=0;i<dashBoard.length;i++){
+          dashBoard[i].text=convert(dashBoard[i].text);
           if(dashBoard[i].collaborator==user.local.email){
               appendCollaboratorCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)//.then(function(){
             // $(document).on('click','#collaboratorDropdown',function(dashBoard){
@@ -116,8 +159,8 @@ function appendCard(user,title,text,cardId,divId,color){
   document.getElementById(divId).innerHTML+="<div class='col-md-4' id='"+cardId+"'><div class='card' style='background-color:"+color+"'>"+
          '<a href="pin?cardId='+cardId +'"><img src='+url+' style="float:right" alt="pin" id="pinIcon"/></a>'+
         //  "<div class='cardImage'> </div>"+
-          "<div class='cardImage'></div><div class='card-content'><form method='POST' action='/updateCard?cardId="+cardId+"'><h4 class='title'><input name='title' style='border-style:none;background-color:"+color+";max-width:180px' value='"+title+"'></h4><span class='text-success'>"+
-          "<input name='text' style='border-style:none;background-color:"+color+";' value='"+text+"'></span><button type='submit' class='btn btn-primary'>Update</button></form>"+"</div>"+
+          "<div class='cardImage'></div><div class='card-content'><div class='title cardTitle' name='title' style='background-color:"+color+"'><p>"+title+"</p></div>"+
+          "<div class='cardText' style='background-color:"+color+";'><p>"+text+"</p></div></div>"+
           "<div class='card-footer'><div><div id='footerButtons'>"+
           "<a class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>"+
           '<a data-toggle="tooltip" title="send to archive" href="/moveToArchive?cardId='+cardId+'"><i class="material-icons" >archive</i></a>&nbsp'+

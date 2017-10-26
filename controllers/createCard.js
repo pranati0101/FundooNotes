@@ -75,6 +75,16 @@ module.exports=function(app,cardMethods){
       }
   })
   })
+  //add url
+  app.post('/addURL',function(req,res){
+    cardMethods.addURL(req.body,req.query.cardId,function(err){
+      if(err) console.error();
+      else{
+        console.log("redirecting to profile",req.user);
+        res.redirect('/profile')
+      }
+    })
+  })
 //card is deleteCard
   app.get('/deleteCard',function(req,res){
     cardMethods.deleteCard(req.query.cardId,function(err,card){

@@ -138,7 +138,19 @@ html
             div(class="row" id="pinnedLabel")
             div(class="row" id="pinned")
             div(class="row" id="cardListLabel")
-            div(class="row" id="cardList")            
+            div(class="row" id="cardList")    
+            div(class="modal fade" id="updateCardModal" role="dialog")
+              div(class="modal-dialog")
+                //-<!-- Modal content-->
+                div(class="modal-content")
+                  div(class="modal-body")
+                    form(id="updateContentForm" method="POST" action="/updateCard")
+                      input(type="text" name="title" id="title" style="display:block" placeholder="Enter title")
+                      input(type="text" name="text" id="text" style="display:block" placeholder="Enter text")
+                      button(type="submit" class="btn btn-default") Done
+                  div(class="modal-footer")
+                    //-cancel button in footer -->          
+                    button(type="button" class="btn btn-default" data-dismiss="modal") Cancel        
             div(class="modal fade" id="changeProfilePic" role="dialog")
               div(class="modal-dialog")
                 //-<!-- Modal content-->
