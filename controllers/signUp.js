@@ -86,11 +86,12 @@ module.exports = function(app, passport) {
       } else {
         var otp = Math.floor((Math.random() * 10000)) + "";
         redisClient.set(req.body.email, otp);
-        // redisClient.expireat(req.body.email, (3*60*60));
+        redisClient.expire(req.body.email, (3*60));
+        url="http://localhost:4000/resetPassword?otp="+otp
         var mailOptions = {
           to: req.body.email,
           subject: "Password reset",
-          text: otp
+          text: url
         }
         console.log(mailOptions);
         // verify connection configuration
@@ -113,27 +114,42 @@ module.exports = function(app, passport) {
       }
     })
   })
+
+  app.get('/resetPassword',function(req,res){
+    console.log(req.query);
+    res.render('resetpwd',{ email : req.query.email,otp:req.query.otp});
+    console.log("in resetPassword");
+
+  })
 //verifying otp from redis cache with enteered by user
-  app.get('/otp', function(req, res) {
-    redisClient.get(req.query.email, function(err, info) {
-      if (err) console.log(err);
-      console.log(req.query.otp);
-      console.log(info);
-      if (info == req.query.otp) {
-        console.log("otp verified");
-        redisClient
-        res.send('verified')
-      } else {
-        res.send('failed')
-      }
-    })
-  });
+  // app.get('/otp', function(req, res) {
+  //   redisClient.get(req.query.email, function(err, info) {
+  //     if (err) console.log(err);
+  //     console.log(req.query.otp);
+  //     console.log(info);
+  //     if (info == req.query.otp) {
+  //       console.log("otp verified");
+  //       redisClient
+  //       res.send('verified')
+  //     } else {
+  //       res.send('failed')
+  //     }
+  //   })
+  // });
 //updating password by calling update password function from models
   app.post('/updatePassword', function(req, res) {
-    userMethods.updatePassword(req.body.email, req.body.password, function(err, info) {
-      if (err) console.error();
-      console.log("data saved..", info);
-      res.send('200')
+    redisClient.get(req.body.email,function(err,otp){
+      console.log(err,otp);
+      if(req.body.otp==otp){
+        userMethods.updatePassword(req.body.email, req.body.password, function(err, info) {
+          if (err) console.log(err);
+          else console.log("data saved..", info);
+          res.send('200')
+        })
+      }
+      else{
+        res.send('500')
+      }
     })
   })
 }

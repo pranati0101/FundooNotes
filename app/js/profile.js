@@ -28,12 +28,6 @@ $('#updateCardModal').on('shown.bs.modal',function(){
 	  var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,;.]*[-A-Z0-9+&@#\/%=~_|])/ig;
 	  var text1=text.replace(exp, "<a target='_blank' href='$1'>$1</a>");
 	  var exp2 =/(^|[^\/])(www\.[\S]+(\b|$))/gim;
-
-    var expr=/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/ig
-    var val=expr.exec(text)//www.nitjsr.ac.in ghghj")
-    console.log(val);
-
-
     return (text1.replace(exp2, '$1<a target="_blank" href="http://$2">$2</a>'))
     }
 /**
@@ -106,6 +100,7 @@ $(document).on('click','a.popoverReminder',function(){
       if(dashBoard.length>0){
         for(i=0;i<dashBoard.length;i++){
           dashBoard[i].text=convert(dashBoard[i].text);
+
           if(dashBoard[i].collaborator==user.local.email){
               appendCollaboratorCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)//.then(function(){
             // $(document).on('click','#collaboratorDropdown',function(dashBoard){
@@ -135,6 +130,14 @@ $(document).on('click','a.popoverReminder',function(){
                 // $('#card').css("min-width","content");
                 $(elem).closest('.card-content').css("height","400px");
             }
+            if(dashBoard[i].url != null)
+              {
+                var urldiv = document.createElement("DIV");
+                var elem=document.getElementById(dashBoard[i].cardId)
+                // urldivdashBoard[i].url.title
+                $(elem).find('.card-content').append(urldiv);
+                $(elem).closest('.card-content').css("height","400px");
+              }
         }
       }
     })

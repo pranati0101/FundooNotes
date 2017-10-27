@@ -72,17 +72,33 @@ exports.addPerson=function(id,mail,callback){
     }
   })
 }
-//add collaborator
+//add url
+/**
+ * add url in the url array of card schema
+ * @param  {string}   id       [unique id of the note stored in db]
+ * @param  {object}   url      [url meta datas to be stored in the card]
+ * @param  {Function} callback [callback function]
+ * @return {string}            [to chk whether data is proprly inserted or not]
+ */
 exports.addURL=function(id,url,callback){
   Card.findOne({cardId:id},function(err,res){
     if(err) console.log(err);
     else {
-      // console.log("found card",res);
-      res.url.push(url);
-      res.save(function(err){
-        if(err) callback(err,null);
-        else callback(null,'done');
+      var status=false;
+      for(i in res.url){
+        if(res.url[i].baseurl==url.baseurl){
+          status=true;
+          break;
+        }
+      }
+      if(!status){
+        res.url.push(url);
+        res.save(function(err){
+          if(err) callback(err,null);
+          else callback(null,'done');
       })
+      }
+      else callback(null,'done')
     }
   })
 }
@@ -107,7 +123,28 @@ exports.removeCollaborator=function(id,mail,callback){
       })
     }
   })
-  console.log("in");
+}
+/**
+ * removes mail from the collaborator field of the particular note
+ * @param  {string}   id       [unique id of the note stored in db]
+ * @param  {[type]}   url     [baseurl   which is to be removed from note]
+ * @param  {Function} callback [callback function]
+ * @return {string}            [to chk whether data is proprly removed or not]
+ */
+//remove user from collaborator
+exports.removeURL=function(id,url,callback){
+  Card.findOne({cardId:id},function(err,res){
+    if(err) console.log(err);
+    else {
+      // console.log("found card",res);
+      // res.url.splice(res.collaborator.indexOf(mail),1);
+      console.log(res.url);
+      res.save(function(err){
+        if(err) callback(err,null);
+        else callback(null,'done');
+      })
+    }
+  })
 }
 /**
  * returns particular note by searching using _id
@@ -213,7 +250,7 @@ exports.updateCard=function(data,id,callback){
     text:data.text
   }},function(err,res){
     if(err) callback(err,null);
-    else callback(null,'done')
+    else callback(null,res)
   })
 }
 /**

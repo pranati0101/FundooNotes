@@ -47,15 +47,9 @@ module.exports=function(app){
     console.log("in home");
   })
 
-  app.get('/resetPassword',function(req,res){
-    console.log(req.query);
-    res.render('resetpwd',{ email : req.query.email });
-    console.log("in resetPassword");
 
-  })
 
   app.get('/profile',function(req,res){
-    console.log("in profile..",req.user);
     if(req.user){
       res.render('profile.pug',{user:req.user});
     }

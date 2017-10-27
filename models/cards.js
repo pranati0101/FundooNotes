@@ -26,9 +26,7 @@ image:{
   default:null
   },
   url:{
-    [{
-      urlTitle
-    }],
+    type:[{}],
     default:null
   },
 color:{

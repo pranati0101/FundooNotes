@@ -13,6 +13,10 @@ html
         div(class="form1")
           p Enter Password.
           br
+          input(type="password" placeholder="Enter OTP.." size="70" id="otp" value
+            =
+              otp
+              )
           input(name="password" type="password" placeholder="Enter Password" size="70" id="pwd")
           input(type="password" placeholder="Confirm Password" size="70" id="pwd2")
           button(class="login-acc" type="submit" id="setpwd" onclick="set()") Submit
@@ -27,12 +31,13 @@ html
                         type:"POST",
                         url:"/updatePassword",
                         data:{
+                          otp:document.getElementById("otp").value,
                           email:localStorage.getItem('email'),
                           password:document.getElementById('pwd').value
                         },
                         datatype:'json'
                       }).done(function(res){
-                        console.log(res);
+                        alert(res);
                         window.location.href='/';
                       }) //.fail(alert("Error Occured!Try again."))
                     }
