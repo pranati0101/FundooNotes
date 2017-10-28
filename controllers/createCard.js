@@ -37,25 +37,27 @@ module.exports=function(app,cardMethods){
           // console.log(card);
           var expr=/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,})/igm
           var val=card.text.match(expr)
-          console.log(val);
-          console.log(val.length);
-          for(i=0; i<val.length; i++)
-          {
-          metadata=contentScrapping(val[i]);
-          metadata.then(function(meta){
-            if(meta!=null){
-              cardMethods.addURL(card.cardId,meta,function(err,resp){
-                if(err) console.log(err);
-                // res.redirect('/profile')
-              })
-            }
-            // else res.redirect('/profile');
-          }).catch(function(error){
-            console.log(error);
-            // res.redirect('/profile');
-          })
-        }
-        res.redirect('/profile')
+          // console.log(val);
+          // console.log(val.length);
+          if(val!=null){
+            for(i=0; i<val.length; i++)
+            {
+            metadata=contentScrapping(val[i]);
+            metadata.then(function(meta){
+              if(meta!=null){
+                cardMethods.addURL(card.cardId,meta,function(err,resp){
+                  if(err) console.log(err);
+                  // res.redirect('/profile')
+                })
+              }
+              // else res.redirect('/profile');
+            }).catch(function(error){
+              console.log(error);
+              // res.redirect('/profile');
+            })
+          }
+          }
+          res.redirect('/profile')
           // esClient.index({
           //    index: indexName,
           //    type: "info",
@@ -117,15 +119,15 @@ module.exports=function(app,cardMethods){
   })
   })
   //add url
-  app.post('/addURL',function(req,res){
+  app.get('/removeURL',function(req,res){
 
-    // cardMethods.addURL(req.body,req.query.cardId,function(err){
-    //   if(err) console.error();
-    //   else{
-    //     console.log("redirecting to profile",req.user);
-    //     res.redirect('/profile')
-    //   }
-    // })
+    cardMethods.removeURL(req.query.cardId,req.query.url,function(err){
+      if(err) console.error();
+      else{
+        console.log("redirecting to profile",req.user);
+        res.redirect('/profile')
+      }
+    })
   })
 //card is deleteCard
   app.get('/deleteCard',function(req,res){

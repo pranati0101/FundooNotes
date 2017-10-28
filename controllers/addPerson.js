@@ -10,6 +10,7 @@ module.exports=function(app,cardMethods){
     // console.log(req.body,req.query.cardId);
     cardMethods.addPerson(req.query.cardId,req.body.personEmail,function(err,result){
       if(err) console.log(err);
+      if(result=='done') res.redirect('/profile')
       else res.redirect('/profile')
     })
   })

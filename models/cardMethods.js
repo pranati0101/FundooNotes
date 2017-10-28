@@ -3,6 +3,7 @@
  */
 var mongoose = require('mongoose')
 var Card=require('./cards').Card
+var User=require('./users').User
 /**
  *Method definitions
  */
@@ -60,16 +61,27 @@ exports.changeColor=function(id,color,callback){
  */
 //add collaborator
 exports.addPerson=function(id,mail,callback){
-  Card.findOne({cardId:id},function(err,res){
+  User.findOne({'local.email':mail},function(err,user){
     if(err) console.log(err);
-    else {
-      // console.log("found card",res);
-      res.collaborator.push(mail);
-      res.save(function(err){
-        if(err) callback(err,null);
-        else callback(null,'done');
+    if(user!=null){
+      var info={
+        name:user.firstname+" "+user.lastname,
+        email:user.local.email,
+        image:user.profilePic
+      }
+      Card.findOne({cardId:id},function(err,res){
+        if(err) console.log(err);
+        else {
+          // console.log("found card",res);
+          res.collaborator.push(info);
+          res.save(function(err){
+            if(err) console.log(err);
+            else callback(null,'done');
+          })
+        }
       })
     }
+    else callback(null,null)
   })
 }
 //add url
@@ -137,7 +149,7 @@ exports.removeURL=function(id,url,callback){
     if(err) console.log(err);
     else {
       // console.log("found card",res);
-      // res.url.splice(res.collaborator.indexOf(mail),1);
+      res.url.splice(res.collaborator.indexOf(url),1);
       console.log(res.url);
       res.save(function(err){
         if(err) callback(err,null);
@@ -214,7 +226,10 @@ exports.setReminder = function(data,id,callback) {
 exports.getCards = function(id,userEmail,callback) {
   Card.find({$or:[
     {userId:id},
-    {collaborator:userEmail}]
+    {collaborator:{$elemMatch:{
+      email:userEmail
+    }
+    }}]
 },function(err,info){
     if(err) callback(err,null);
     else{

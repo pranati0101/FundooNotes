@@ -96,28 +96,71 @@ $(document).on('click','a.popoverReminder',function(){
         }
         document.getElementById('cardListLabel').innerHTML+='OTHERS';
       }
-
+      //if there are any cards present in dashboard
       if(dashBoard.length>0){
         for(i=0;i<dashBoard.length;i++){
           dashBoard[i].text=convert(dashBoard[i].text);
+          //if collaborator field is not null
+          if(dashBoard[i].collaborator!=null){
+            // user is not owner of the card
+            if(dashBoard[i].userId!=user.userId){
+              appendCollaboratorCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)
+              //calling api to get owner information
 
-          if(dashBoard[i].collaborator==user.local.email){
-              appendCollaboratorCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)//.then(function(){
-            // $(document).on('click','#collaboratorDropdown',function(dashBoard){
-              for(j in dashBoard[i].collaborator){
-                var li=document.createElement('li');
-                var del=document.createElement('a');
-                $(del).attr('data-toggle','tooltip')
-                del.href="/removeCollaborator?cardId="+dashBoard[i].cardId+"&mail="+dashBoard[i].collaborator[j];
-                del.innerText="x";
-                del.title="Remove collaborator"
-                del.style.float="right";
-                li.append(dashBoard[i].collaborator[j]);
-                li.append(del);
-                document.getElementById('collaboratorList').append(li);
+            var owner;
+            $.ajax({
+                  url:"/getUserInfo?id="+dashBoard[i].userId,
+                  async:false,
+                  method:"GET",
+                  dataType:"JSON"
+                }).then(function(info){
+                  owner=info;
+                  console.log(info);
+                  return info;
+                })
+
+                    var li=document.createElement('li');
+                    var img=document.createElement('img');
+                    img.src=owner.profilePic;
+                    img.class="img-responsive img-thumbnail img-circle"
+                    $(img).css("max-width","50px");
+                    $(img).css("max-height","50px")
+                    li.append(img);
+                    li.append(owner.local.email);
+                    li.append("(owner)"+owner.firstname+" "+owner.lastname);
+                    card=document.getElementById(dashBoard[i].cardId);
+                    $(card).find('#collaboratorList').append(li);
+
               }
-          }
-          else appendCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)//.then(function(){
+              else{
+                appendCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)
+              }
+                  for(j in dashBoard[i].collaborator){
+                      if(dashBoard[i].collaborator[j].email!=user.local.email){
+                      var li=document.createElement('li');
+                      var del=document.createElement('a');
+                      var img=document.createElement('img');
+                      img.src=dashBoard[i].collaborator[j].image;
+                      console.log("adding collaborators-->"+img.src);
+                      img.class="img-responsive img-thumbnail img-circle"
+                      $(img).css("max-width","50px");
+                      $(img).css("max-height","50px")
+                      $(del).attr('data-toggle','tooltip')
+                      del.href="/removeCollaborator?cardId="+dashBoard[i].cardId+"&mail="+dashBoard[i].collaborator[j].email;
+                      del.innerText="x";
+                      del.title="Remove collaborator"
+                      del.style.float="right";
+                      li.append(img);
+                      li.append(dashBoard[i].collaborator[j].name);
+                      li.append(dashBoard[i].collaborator[j].email);
+                      li.append(del);
+                      card=document.getElementById(dashBoard[i].cardId);
+                      $(card).find('#collaboratorList').append(li);
+                    }
+                  }
+
+            }
+            else appendCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)//.then(function(){
 
           if(dashBoard[i].image != null)
             {
@@ -130,13 +173,41 @@ $(document).on('click','a.popoverReminder',function(){
                 // $('#card').css("min-width","content");
                 $(elem).closest('.card-content').css("height","400px");
             }
-            if(dashBoard[i].url != null)
+            if(dashBoard[i].url.length>0)
               {
-                var urldiv = document.createElement("DIV");
+                var urlList = document.createElement("ul");
                 var elem=document.getElementById(dashBoard[i].cardId)
-                // urldivdashBoard[i].url.title
-                $(elem).find('.card-content').append(urldiv);
-                $(elem).closest('.card-content').css("height","400px");
+                $(elem).find('.card-content').append(urlList);
+                // $(elem).closest('.card-content').css("height","400px");
+                for(j in dashBoard[i].url){
+                  var urldiv=document.createElement('li');
+                  urldiv.className="card";
+                  urldiv.append(dashBoard[i].url[j].title)
+                  var link1=document.createElement("a");
+                  link1.innerText="visit"
+                  link1.target="_blank"
+                  link1.href="http://"+dashBoard[i].url[j].baseurl;
+                  var link2=document.createElement("a");
+                  link2.innerText="Remove"
+                  link2.href="/removeURL?url="+dashBoard[i].url[j].baseurl+
+                              "&cardId="+dashBoard[i].cardId
+                  var img=document.createElement("img");
+                  img.alt="IMG";
+                  img.className="img-responsive img-thumbnail"
+                  $(img).css("max-width","40px");
+                  $(img).css("max-height","40px");
+                  if(dashBoard[i].url[j].image!=null){
+                    img.src=dashBoard[i].url[j].image
+                  }
+                  // urldiv.append(dashBoard[i].url[j].+"/n")
+
+                  urldiv.append(img)
+                    urldiv.append(link1);
+                    urldiv.append(link2);
+                    urlList.append(urldiv)
+
+                }
+
               }
         }
       }
@@ -206,14 +277,14 @@ function appendCollaboratorCard(user,title,text,cardId,divId,color){
   document.getElementById(divId).innerHTML+="<div class='col-md-4' id='"+cardId+"'><div class='card' style='background-color:"+color+"'>"+
          '<a href="pin?cardId='+cardId +'"><img src='+url+' style="float:right" alt="pin" id="pinIcon"/></a>'+
         //  "<div class='cardImage'> </div>"+
-          "<div class='cardImage'></div><div class='card-content'><form method='POST' action='/updateCard?cardId="+cardId+"'><h4 class='title'><input name='title' style='border-style:none;background-color:"+color+"' value='"+title+"'></h4><span class='text-success'>"+
-          "<input name='text' style='border-style:none;background-color:"+color+";' value='"+text+"'></span><button type='submit' class='btn btn-primary'>Update</button></form>"+"</div>"+
+          "<div class='cardImage'></div><div class='card-content'><div class='title cardTitle' name='title' style='background-color:"+color+"'><p>"+title+"</p></div>"+
+          "<div class='cardText' style='background-color:"+color+";'><p>"+text+"</p></div></div>"+
           "<div class='card-footer'><div><div id='footerButtons'>"+
           "<a data-toggle='tooltip' title='Set Reminder' class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>"+
           '<a data-toggle="tooltip" title="send to archive" href="/moveToArchive?cardId='+cardId+'"><i class="material-icons" >archive</i></a>&nbsp'+
           '<div data-toggle="tooltip" title="Add collaborator" class="dropdown"><a class="dropdown-toggle" id="collaboratorDropdown" data-toggle="dropdown"><i class="material-icons">person_add</i></a>'+
           '<div class="dropdown-menu"><ul style="width: 350px !important;" id="collaboratorList">'+
-          '</li></ul><form method="POST" action="/addPerson?cardId='+cardId+'"><input type="text" placeholder="Enter email id.." name="personEmail"><br><button type="submit" class="btn btn-primary">Add</button></form></div></div>&nbsp'+
+          '</ul><form method="POST" action="/addPerson?cardId='+cardId+'"><input type="text" placeholder="Enter email id.." name="personEmail"><br><button type="submit" class="btn btn-primary">Add</button></form></div></div>&nbsp'+
           '<div data-toggle="tooltip" title="Change color" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"><i class="material-icons">color_lens</i></a><ul class="dropdown-menu navbar-right">'+
           // '<div class="row">'+
           '<span  class="col-sm-2"><a data-toggle="tooltip" title="white" href="/changeColor?cardId='+cardId+'&color=RGB(255, 255, 255)"><img class="img-circle" src="../Images/c1.png" height="20px" width="20px"/></a></span>'+

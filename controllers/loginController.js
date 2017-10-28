@@ -18,10 +18,17 @@ mongoose.connect(db.url, {
 });
 
 User = require('../models/users.js');
-
+var userMethods=require('../models/userMethods.js')
 /*-----logic for different api----*/
 
 module.exports = function(app, passport) {
+  //api for searching a user
+  app.get('/getUserInfo',function(req,res){
+    userMethods.searchById(Object(req.query.id),function(err,info){
+      if(err) console.log(err);
+      else res.send(info)
+    })
+  })
 //api for logging in using oauth2 and passport strategies
   app.post('/loginLocal', passport.authenticate('local-login', {
     successRedirect: '/profile', // redirect to the secure profile section

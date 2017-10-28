@@ -84,7 +84,7 @@ reminder:{
   }
 },
 collaborator:{
-  type:[String],
+  type:[{}],
   default:null
 }
 });
