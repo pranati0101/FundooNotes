@@ -3,18 +3,26 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha ./test",
+    "start": "node server.js"
+  },
   "dependencies": {
+    "amqp": "^0.2.6",
     "bcrypt": "^1.0.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
+    "chai-http": "^3.0.0",
     "cheerio": "^1.0.0-rc.2",
     "connect": "^3.6.5",
     "connect-flash": "^0.1.1",
     "elasticsearch": "^13.3.1",
+    "events": "^1.1.1",
     "express": "^4.15.4",
     "express-graphql": "^0.6.11",
     "express-oauth-server": "^2.0.0",
     "express-session": "^1.15.5",
+    "express-validator": "^4.3.0",
     "fs-extra": "^4.0.2",
     "graphql": "^0.11.3",
     "graphql-date": "^1.0.3",
@@ -25,8 +33,10 @@
     "mpromise": "^0.5.5",
     "mquery": "^2.3.1",
     "node-inspector": "^1.1.1",
+    "node-validator": "^0.1.27",
     "nodemailer": "^4.1.1",
     "nodemailer-smtp-transport": "^2.7.4",
+    "nodemon": "^1.12.1",
     "oauth2-server": "^3.0.0",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
@@ -37,12 +47,14 @@
     "redis": "^2.8.0",
     "request": "^2.83.0",
     "session": "^0.1.0",
-    "url-metadata": "^2.1.7"
+    "url-metadata": "^2.1.7",
+    "validator": "^9.1.1"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "superagent": "^3.8.0",
+    "supertest": "^3.0.0"
   },
   "author": "Pranati",
   "license": "ISC"

@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 var express = require("express");
+// var validator = require('express-validator');
 var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
@@ -11,26 +12,30 @@ var morgan=require('morgan')
 var flash= require('connect-flash');
 var http = require('http').Server(app);
 var io = require('socket.io').listen(http);
-var jwt = require('jsonwebtoken');
-var schedule = require('node-schedule');
-const notifier = require('node-notifier')
-var fs=require('fs-extra');
-var multer = require('multer');
+var db = require('./config/database')
+/**
+ * passing module dependencies
+ */
+require('./api/users/Services/passport.js')(passport);
+require('./api/notes/Services/socket.js')(app,io)
+/**
+ *connecting to mongoose db using configuration
+ */
+mongoose.connect(db.url, {
+  useMongoClient: true,
+}).catch(function(e) {
+  if (e) console.log(e);
+});
 
-// var redis=require('redis');
-// var redisClient=redis.createClient();
 app.use(express.static('./app'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-// url = 'mongodb://localhost/notes';
-var authModel=require('./models/authModel')
-var User=require('./models/users');
-var Card=require('./models/cards');
-var userMethods=require('./models/userMethods')
-var cardMethods=require('./models/cardMethods')
-
+// app.use(validator());
+/**
+ * setting view engine
+ */
 app.set('view engine', 'pug');
 app.set('views','./app/views');
 app.use(session({
@@ -41,26 +46,18 @@ app.use(session({
 app.use(morgan('dev'))
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
-app.use(flash())
-/**
- * passing module dependencies
- */
-require('./config/passport')(passport);
-// require('./index.js')(app,passport);
-require('./controllers/controllerHome.js')(app,passport);
-require('./controllers/loginController.js')(app,passport);
-require('./controllers/signUp.js')(app,passport);
-require('./controllers/createCard.js')(app,cardMethods);
-require('./controllers/addPerson.js')(app,cardMethods);
-require('./controllers/cardReminder.js')(app,schedule,notifier,Card,cardMethods)
-require('./controllers/socket.js')(app, io, userMethods, cardMethods, schedule, notifier)
-require('./controllers/Trash.js')(app,cardMethods)
-require('./controllers/Archive.js')(app,cardMethods)
-require('./controllers/search.js')(app,cardMethods)
-// require('./controllers/socket')(app,io,cardMethods,schedule,notifier)
+app.use(flash());
+
+var noteRoutes = require('./api/notes/Routes/noteRoute')(app,express); //importing route
+app.use('/',noteRoutes);//register the routes
+
+var userRoutes = require('./api/users/Routes/userRoute.js')(app,express,passport); //importing route
+app.use('/', userRoutes);//register the route
+
+
 //listening at port PORT
 http.listen(4000, function() {
   console.log("server is running on 4000");
 });
-/*exporting app*/
-// module.exports=app;
+
+module.exports=app

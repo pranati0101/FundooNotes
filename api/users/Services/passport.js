@@ -1,15 +1,16 @@
 // config/passport.js
-
+// var passport=require('passport')
 // load all the things we need
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-// load up the user model
-var User = require('../models/users').User;
+var events=require('events').EventEmitter;
+var util=require('util')
+// var UserServ
 // load the auth variables
-var configAuth = require('./auth');
+var configAuth = require('../../../config/auth');
 //load user model methods
-var userMethods=require('../models/userMethods')
+var userMethods=require('../Models/userModel')
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -44,28 +45,24 @@ module.exports = function(passport) {
       passReqToCallback: true // allows us to pass back the entire request to the callback
     },
     function(req, email, password, done) {
-      console.log("in passport data--",req.body);
       // find a user whose email is the same as the forms email
-      // we are checking to see if the user trying to login already exists
-      userMethods.searchUser(email,0,0,function(err,user){
-        console.log(err,user);
-          if (err)
-            return done(err,false,req.flash('signupMessage', 'Error!'));
+        // we are checking to see if the user trying to login already exists
+        userMethods.searchUser(email,0,0,function(err,user){
+            if (err)
+              return done(err,false,req.flash('signupMessage', 'Error!'));
 
-          // check to see if theres already a user with that email
-          if (user) {
-            console.log("User exists");
-            console.log(user);
-            return done(null, false,req.flash('signupMessage', 'That email is already taken.'));
-          }
-          else {
-            userMethods.createUser(req.body,null,null,function(err,newUser){
-                if(err) console.error();
-                else return done(null,newUser,req.flash('signupMessage', 'New User Registered.'))
-              })
+            // check to see if theres already a user with that email
+            if (user) {
+              return done(null, false,req.flash('signupMessage', 'That email is already taken.'));
             }
-            });
-            }));
+            else {
+              userMethods.createUser(req.body,null,null,function(err,newUser){
+                  if(err) console.error();
+                  else return done(null,newUser,req.flash('signupMessage', 'New User Registered.'))
+                })
+              }
+          });
+        }));
   // =========================================================================
   // FACEBOOK ================================================================
   // =========================================================================

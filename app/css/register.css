@@ -172,7 +172,7 @@ body {
     background: -moz-linear-gradient(top, #8b4c1f, #e77e33);
     background: linear-gradient(to bottom, #8b4c1f, #e77e33);
 }
-.create-acc:after{
+/*.create-acc:after{
     content:  "\0000a0";
     display: inline-block;
     height: 50px;
@@ -190,7 +190,7 @@ body {
 	-o-border-radius: 0px 8px 8px 0px;
 	-ms-border-radius: 0px 8px 8px 0px;
 	border-radius: 0px 8px 8px 0px;
-}
+}*/
 .footer {
   width: 610px;
   margin: 0 auto;

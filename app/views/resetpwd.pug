@@ -22,23 +22,26 @@ html
           button(class="login-acc" type="submit" id="setpwd" onclick="set()") Submit
           div(id="set")
             script(type="text/javascript").
-                  function set(){
-                    if(!true)
-                      alert("Passwords do not match!")
-                    else{
-                      console.log(localStorage.getItem('email'));
-                      $.ajax({
-                        type:"POST",
-                        url:"/updatePassword",
-                        data:{
-                          otp:document.getElementById("otp").value,
-                          email:localStorage.getItem('email'),
-                          password:document.getElementById('pwd').value
-                        },
-                        datatype:'json'
-                      }).done(function(res){
-                        alert(res);
-                        window.location.href='/';
-                      }) //.fail(alert("Error Occured!Try again."))
-                    }
-                    }
+                    function set(){
+                      if(!true)
+                        alert("Passwords do not match!")
+                      else
+                        {
+                        console.log(localStorage.getItem('email'));
+                        $.ajax({
+                          type:"POST",
+                          url:"/updatePassword",
+                          data:{
+                            otp:document.getElementById("otp").value,
+                            email:localStorage.getItem('email'),
+                            password:document.getElementById('pwd').value
+                          },
+                          datatype:'json'
+                        }).done(function(res){
+                          alert(res);
+                          window.location.href='/';
+                        }).fail(function(){
+                          alert("Error Occured!Try again.")
+                        })
+                      }
+                      }

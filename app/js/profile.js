@@ -30,47 +30,168 @@ $('#updateCardModal').on('shown.bs.modal',function(){
 	  var exp2 =/(^|[^\/])(www\.[\S]+(\b|$))/gim;
     return (text1.replace(exp2, '$1<a target="_blank" href="http://$2">$2</a>'))
     }
+    /**
+     * [description]
+     * @return {[type]} [description]
+     */
+    $(document).on('click','a.popoverReminder',function(){
+      var id=$(event.target).closest('.col-md-4').attr('id');
+      $('#reminderModal').modal('toggle');
+      $('#reminderModal').modal('show');
+      $('#reminderModal').on('shown.bs.modal', function () {
+        $('.timepicker').timepicker();
+        $('.datepicker').datepicker();
+        /**
+         * set reminder at 8:00 pm, today
+         */
+        $('#tomorrow').on('click',function(){
+          var today = new Date();
+          var dd = today.getDate();
+          var mm = today.getMonth()+1; //January is 0!
+          var yyyy = today.getFullYear();
+          if(mm==1 ||mm==3||mm==5||mm==7||mm==8||mm==10||mm==12){
+            if(dd==31){
+              dd=1;mm=mm+1;
+            }
+          }
+          else if(mm=2){
+            if(dd==28){
+              dd=1;mm=3
+            }
+          }
+          else{
+            if(dd==30){
+              dd=1;mm=mm+1;
+            }
+          }
+          var values={
+            date:dd,
+            month:mm,
+            year:yyyy,
+            hours:8,
+            minutes:0,
+            seconds:0,
+            cardId:id
+          }
+    /**
+     *setting reminder by calling set reminder api
+     */
+          $.ajax({
+            url:'/setReminder',
+            method:'POST',
+            dataType:'JSON',
+            data:values
+          }).done(function(err,res){
+            alert(res);
+            if(err) console.error();
+          })
+      })
+        /**
+         * set reminder at 8:00 pm, today
+         */
+        $('#laterToday').on('click',function(){
+          var today = new Date();
+          var dd = today.getDate();
+          var mm = today.getMonth()+1; //January is 0!
+          var yyyy = today.getFullYear();
+          var values={
+            date:dd,
+            month:mm,
+            year:yyyy,
+            hours:20,
+            minutes:0,
+            seconds:0,
+            cardId:id
+          }
+    /**
+     *setting reminder by calling set reminder api
+     */
+          $.ajax({
+            url:'/setReminder',
+            method:'POST',
+            dataType:'JSON',
+            data:values
+          }).done(function(err,res){
+            alert(res);
+            if(err) console.error();
+          })
+      })
+/**
+ * when set reminder button is clicked
+ * set reminder on customised date and time
+ */
+        $('#setReminder').on('click',function(){
+          var date=$('.datepicker').val();
+          var time=$('.timepicker').val();
+          var hours=parseInt(time.substr(0,2))
+          var month=parseInt(date.substr(0,2))-1;
+          if(time.substr(6,2)=='PM' && hours<12)
+            hours=hours+12
+          var values={
+            date:date.substr(3,2),
+            month:month,
+            year:date.substr(6,4),
+            hours:hours,
+            minutes:time.substr(3,2),
+            seconds:0,
+            cardId:id
+          }
+    /**
+     *setting reminder by calling set reminder api
+     */
+          $.ajax({
+            url:'/setReminder',
+            method:'POST',
+            dataType:'JSON',
+            data:values
+          }).done(function(err,res){
+            alert(res);
+            if(err) console.error();
+          })
+      })
+    })
+    })
 /**
  * [description]
  * @return {[type]} [description]
  */
-$(document).on('click','a.popoverReminder',function(){
-  $(this).popover({
-    html: true,
-    title:'<input type="text" class="datepicker" placeholder="Enter date"><br><input type="text" placeholder="Enter time" class="timepicker"><br><button type="submit" id="setReminder"> Submit</button>'
-  })
-  $(this).on('shown.bs.popover', function () {
-
-    $('.datepicker').datepicker();
-    $('.timepicker').timepicker();
-    $('#setReminder').on('click',function(){
-      var date=$(event.target).closest('#footerButtons').find('.datepicker').val();
-      var time=$(event.target).closest('#footerButtons').find('.timepicker').val();
-      var id=$(event.target).closest('.col-md-4').attr('id');
-      var hours=parseInt(time.substr(0,2))
-      var month=parseInt(date.substr(0,2))-1;
-      if(time.substr(6,2)=='PM' && hours<12)
-        hours=hours+12
-      var values={
-        date:date.substr(3,2),
-        month:month,
-        year:date.substr(6,4),
-        hours:hours,
-        minutes:time.substr(3,2),
-        seconds:0,
-        cardId:id
-      }
-      $.ajax({
-        url:'/setReminder',
-        method:'POST',
-        dataType:'JSON',
-        data:values
-      }).done(function(err,res){
-        if(err) console.error();
-      })
-  })
-})
-})
+// $(document).on('click','a.popoverReminder',function(){
+//   $(this).popover({
+//     html: true,
+//     title:'<input type="text" class="datepicker" placeholder="Enter date"><br><input type="text" placeholder="Enter time" class="timepicker"><br><button type="submit" id="setReminder"> Submit</button>'
+//   })
+//   $(this).on('shown.bs.popover', function () {
+//
+//     $('.datepicker').datepicker();
+//     $('.timepicker').timepicker();
+//     $('#setReminder').on('click',function(){
+//       var date=$(event.target).closest('#footerButtons').find('.datepicker').val();
+//       var time=$(event.target).closest('#footerButtons').find('.timepicker').val();
+//       var id=$(event.target).closest('.col-md-4').attr('id');
+//       var hours=parseInt(time.substr(0,2))
+//       var month=parseInt(date.substr(0,2))-1;
+//       if(time.substr(6,2)=='PM' && hours<12)
+//         hours=hours+12
+//       var values={
+//         date:date.substr(3,2),
+//         month:month,
+//         year:date.substr(6,4),
+//         hours:hours,
+//         minutes:time.substr(3,2),
+//         seconds:0,
+//         cardId:id
+//       }
+//       $.ajax({
+//         url:'/setReminder',
+//         method:'POST',
+//         dataType:'JSON',
+//         data:values
+//       }).done(function(err,res){
+//         if(err) console.error();
+//       })
+//   })
+// })
+// })
 
   $(document).ready(function() {
 
@@ -87,24 +208,24 @@ $(document).on('click','a.popoverReminder',function(){
     socket.emit('initElasticSearchIndex',userId)
     socket.on('showCards',function(dashBoard,archived,pinned,trash){
       // console.log("printing cards");
-      // console.log(dashBoard,archived,pinned,trash);
+      console.log(dashBoard);
 
       if(pinned.length>0){
           document.getElementById('pinnedLabel').innerHTML+='PINNED';
-        for (i=0;i<pinned.length;i++){
-          appendCard(user,pinned[i].title,pinned[i].text,pinned[i].cardId,'pinned',pinned[i].color)
-        }
         document.getElementById('cardListLabel').innerHTML+='OTHERS';
       }
       //if there are any cards present in dashboard
       if(dashBoard.length>0){
+        var divId;
         for(i=0;i<dashBoard.length;i++){
+          if(dashBoard[i].pinned) divId="pinned"
+          else divId="cardList"
           dashBoard[i].text=convert(dashBoard[i].text);
           //if collaborator field is not null
           if(dashBoard[i].collaborator!=null){
             // user is not owner of the card
             if(dashBoard[i].userId!=user.userId){
-              appendCollaboratorCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)
+              appendCollaboratorCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,divId,dashBoard[i].color)
               //calling api to get owner information
 
             var owner;
@@ -133,7 +254,7 @@ $(document).on('click','a.popoverReminder',function(){
 
               }
               else{
-                appendCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)
+                appendCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,divId,dashBoard[i].color)
               }
                   for(j in dashBoard[i].collaborator){
                       if(dashBoard[i].collaborator[j].email!=user.local.email){
@@ -160,8 +281,17 @@ $(document).on('click','a.popoverReminder',function(){
                   }
 
             }
-            else appendCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,'cardList',dashBoard[i].color)//.then(function(){
-
+            else appendCard(user,dashBoard[i].title,dashBoard[i].text,dashBoard[i].cardId,divId,dashBoard[i].color)//.then(function(){
+        if(dashBoard[i].label!=null){
+                var card=document.getElementById(dashBoard[i].cardId);
+                console.log(card);
+                var p=document.createElement('p');
+                p.innerHTML+=dashBoard[i].label;
+                labelElem=$(card).find('.card').find('.label');
+                labelElem.append(p);
+                labelElem.style="display:block";
+                // labelElem.innerHTML+=dashBoard[i].label
+              }
           if(dashBoard[i].image != null)
             {
               var img = document.createElement("IMG");
@@ -178,13 +308,19 @@ $(document).on('click','a.popoverReminder',function(){
                 var urlList = document.createElement("ul");
                 var elem=document.getElementById(dashBoard[i].cardId)
                 $(elem).find('.card-content').append(urlList);
+
                 // $(elem).closest('.card-content').css("height","400px");
                 for(j in dashBoard[i].url){
                   var urldiv=document.createElement('li');
                   urldiv.className="card";
-                  urldiv.append(dashBoard[i].url[j].title)
+
+                  var textDiv=document.createElement("div");
+                  textDiv.innerText=dashBoard[i].url[j].title;
+
+
                   var link1=document.createElement("a");
                   link1.innerText="visit"
+                  link1.innerHTML="<i class='material-icons'>link</i>"
                   link1.target="_blank"
                   link1.href="http://"+dashBoard[i].url[j].baseurl;
                   var link2=document.createElement("a");
@@ -197,22 +333,22 @@ $(document).on('click','a.popoverReminder',function(){
                   $(img).css("max-width","40px");
                   $(img).css("max-height","40px");
                   if(dashBoard[i].url[j].image!=null){
-                    img.src=dashBoard[i].url[j].image
+                    img.src=dashBoard[i].url[j].image;
                   }
-                  // urldiv.append(dashBoard[i].url[j].+"/n")
-
+                  urlList.append(urldiv)
                   urldiv.append(img)
-                    urldiv.append(link1);
-                    urldiv.append(link2);
-                    urlList.append(urldiv)
+                  urldiv.append(link1);
+                  link1.style="FLOAT:RIGHT"
+                  urldiv.append(textDiv)
+                  urldiv.append(link2);
+                  link2.style="FLOAT:RIGHT"
 
-                }
 
-              }
+            }
+          }
         }
       }
     })
-
   })
 /**
  * [appendCard description]
@@ -232,9 +368,9 @@ function appendCard(user,title,text,cardId,divId,color){
   imgSrc=""
   document.getElementById(divId).innerHTML+="<div class='col-md-4' id='"+cardId+"'><div class='card' style='background-color:"+color+"'>"+
          '<a href="pin?cardId='+cardId +'"><img src='+url+' style="float:right" alt="pin" id="pinIcon"/></a>'+
-        //  "<div class='cardImage'> </div>"+
           "<div class='cardImage'></div><div class='card-content'><div class='title cardTitle' name='title' style='background-color:"+color+"'><p>"+title+"</p></div>"+
           "<div class='cardText' style='background-color:"+color+";'><p>"+text+"</p></div></div>"+
+          "<div class='label'></div>"+
           "<div class='card-footer'><div><div id='footerButtons'>"+
           "<a class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>"+
           '<a data-toggle="tooltip" title="send to archive" href="/moveToArchive?cardId='+cardId+'"><i class="material-icons" >archive</i></a>&nbsp'+
@@ -260,10 +396,12 @@ function appendCard(user,title,text,cardId,divId,color){
           '</ul></div>&nbsp'+
           '<div data-toggle="tooltip" title="Add Image" class="dropdown"><a data-toggle="dropdown"><i class="material-icons">insert_photo</i></a><ul class="dropdown-menu">'+
           '<form id="frmUploader" enctype="multipart/form-data" action="/addImage?cardId='+cardId+'" method="post">'+
-        '<input name="imgUploader" type="file" id="imgSrc" multiple/><input type="submit"></input></form></ul></div>'+
-          "<div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown'><i class='material-icons'>more_vert</i></a>"+
-          '<ul class="dropdown-menu"><li><a data-toggle="tooltip" title="Delete" href="/moveToTrash?cardId='+cardId+'">Delete</a></li>'+
+          '<input name="imgUploader" type="file" id="imgSrc" multiple/><input type="submit"></input></form></ul></div>'+
+          "<div class='dropdown'><a  data-toggle='dropdown'><i class='material-icons'>more_vert</i></a>"+
+          '<ul class="dropdown-menu multi-level"><li><a data-toggle="tooltip" title="Delete" href="/moveToTrash?cardId='+cardId+'">Delete</a></li>'+
           '<li><a data-toggle="tooltip" title="Set Location" href="/addLocation?cardId='+cardId+'">Add Location</a></li>'+
+          '<li class="dropdown-submenu"><a>AddLabel</a><ul class="dropdown-menu"><form method="POST" action="/addLabel?cardId='+cardId+
+          '"><input type="text" placeholder="Enter Label" name="label"><button type="submit">Done</button></form></ul></li>'+
           '</ul></div>'+
           "</div></div><div>"
 }
@@ -279,6 +417,7 @@ function appendCollaboratorCard(user,title,text,cardId,divId,color){
         //  "<div class='cardImage'> </div>"+
           "<div class='cardImage'></div><div class='card-content'><div class='title cardTitle' name='title' style='background-color:"+color+"'><p>"+title+"</p></div>"+
           "<div class='cardText' style='background-color:"+color+";'><p>"+text+"</p></div></div>"+
+          "<div class='label color='black-color'></div>"+
           "<div class='card-footer'><div><div id='footerButtons'>"+
           "<a data-toggle='tooltip' title='Set Reminder' class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>"+
           '<a data-toggle="tooltip" title="send to archive" href="/moveToArchive?cardId='+cardId+'"><i class="material-icons" >archive</i></a>&nbsp'+
@@ -304,8 +443,10 @@ function appendCollaboratorCard(user,title,text,cardId,divId,color){
           '</ul></div>&nbsp'+
           '<div data-toggle="tooltip" title="Add Image" class="dropdown"><a data-toggle="dropdown"><i class="material-icons">insert_photo</i></a><ul class="dropdown-menu">'+
           '<form id="frmUploader" enctype="multipart/form-data" action="/addImage?cardId='+cardId+'" method="post">'+
-        '<input name="imgUploader" type="file" id="imgSrc" multiple/><input type="submit"></input></form></ul></div>'+
+          '<input name="imgUploader" type="file" id="imgSrc" multiple/><input type="submit"></input></form></ul></div>'+
           "<div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown'><i class='material-icons'>more_vert</i></a>"+
-          '<ul class="dropdown-menu"><li><a href="/removeMyself?cardId='+cardId+'">Remove myself</a></li></ul></div>'+
+          '<ul class="dropdown-menu"><li><a href="/removeMyself?cardId='+cardId+'">Remove myself</a></li>'+
+          '<li><a href="/addLabel?cardId="'+cardId+'">Add Label</a></li>'
+          '</ul></div>'+
           "</div></div><div>"
 }

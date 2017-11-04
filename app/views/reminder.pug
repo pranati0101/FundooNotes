@@ -24,7 +24,7 @@ html
     //-  <!--  Dynamic Elements plugin -->
     script(src="https://cdnjs.cloudflare.com/ajax/libs/arrive/2.4.1/arrive.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/arrive/2.4.1/arrive.min.js")
-    script(type="text/javascript" src="../js/archive.js")
+    script(type="text/javascript" src="../js/reminder.js")
     script(type="text/javascript" src="../js/profilePic.js")
     script(type="text/javascript" src="../js/croppie.js")
     script(type="text/javascript" src="../js/autocomplete.js")
@@ -104,9 +104,9 @@ html
                 i(class="material-icons") delete
                 div(style='display:inline-block') Trash
       div(class="main-panel" id="mainPanel")
-        input(id='archived' type='text' style="display:none" value
+        input(id='reminder' type='text' style="display:none" value
           =
-            archived
+            reminderList
             )
         div(class="content")
           div(class="container-fluid")

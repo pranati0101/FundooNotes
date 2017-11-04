@@ -157,23 +157,26 @@ user = JSON.parse(user);
 var userId = user.userId;
 var userEmail = user.local.email; //document.getElementById('mail').value;
 
-archiveList = document.getElementById('archived').value;
-archiveList = JSON.parse(archiveList)
-
-if (archiveList.length > 0) {
-  for (i = 0; i < archiveList.length; i++) {
-    for (i = 0; i < archiveList.length; i++) {
-      archiveList[i].text = convert(archiveList[i].text);
+reminderList = document.getElementById('reminder').value;
+reminderList = JSON.parse(reminderList)
+console.log(reminderList);
+if (reminderList.length > 0) {
+  for (i = 0; i < reminderList.length; i++) {
+    for (i = 0; i < reminderList.length; i++) {
+      reminderList[i].text = convert(reminderList[i].text);
       //if collaborator field is not null
-      if (archiveList[i].collaborator != null) {
+      if (reminderList[i].collaborator != null) {
         // user is not owner of the card
-        if (archiveList[i].userId != user.userId) {
-          appendCollaboratorCard(user, archiveList[i].title, archiveList[i].text, archiveList[i].cardId, 'cardList', archiveList[i].color)
+        if (reminderList[i].userId != user.userId) {
+          appendCollaboratorCard(user, reminderList[i].title, reminderList[i].text,
+            reminderList[i].cardId, 'cardList', reminderList[i].color,reminderList[i].reminder.reminder.date,
+          reminderList[i].reminder.reminder.month,reminderList[i].reminder.reminder.year,reminderList[i].reminder.reminder.hours,
+          reminderList[i].reminder.reminder.minutes,reminderList[i].reminder.reminder.seconds)
           //calling api to get owner information
 
           var owner;
           $.ajax({
-            url: "/getUserInfo?id=" + archiveList[i].userId,
+            url: "/getUserInfo?id=" + reminderList[i].userId,
             async: false,
             method: "GET",
             dataType: "JSON"
@@ -192,72 +195,78 @@ if (archiveList.length > 0) {
           li.append(img);
           li.append(owner.local.email);
           li.append("(owner)" + owner.firstname + " " + owner.lastname);
-          card = document.getElementById(archiveList[i].cardId);
+          card = document.getElementById(reminderList[i].cardId);
           $(card).find('#collaboratorList').append(li);
 
         } else {
-          appendCard(user, archiveList[i].title, archiveList[i].text, archiveList[i].cardId, 'cardList', archiveList[i].color)
+          appendCard(user, reminderList[i].title, reminderList[i].text,
+            reminderList[i].cardId, 'cardList', reminderList[i].color,reminderList[i].reminder.date,
+          reminderList[i].reminder.month,reminderList[i].reminder.year,reminderList[i].reminder.hours,
+          reminderList[i].reminder.minutes,reminderList[i].reminder.seconds)
         }
-        for (j in archiveList[i].collaborator) {
-          if (archiveList[i].collaborator[j].email != user.local.email) {
+        for (j in reminderList[i].collaborator) {
+          if (reminderList[i].collaborator[j].email != user.local.email) {
             var li = document.createElement('li');
             var del = document.createElement('a');
             var img = document.createElement('img');
-            img.src = archiveList[i].collaborator[j].image;
+            img.src = reminderList[i].collaborator[j].image;
             console.log("adding collaborators-->" + img.src);
             img.class = "img-responsive img-thumbnail img-circle"
             $(img).css("max-width", "50px");
             $(img).css("max-height", "50px")
             $(del).attr('data-toggle', 'tooltip')
-            del.href = "/removeCollaborator?cardId=" + archiveList[i].cardId + "&mail=" + archiveList[i].collaborator[j].email;
+            del.href = "/removeCollaborator?cardId=" + reminderList[i].cardId + "&mail=" + reminderList[i].collaborator[j].email;
             del.innerText = "x";
             del.title = "Remove collaborator"
             del.style.float = "right";
             li.append(img);
-            li.append(archiveList[i].collaborator[j].name);
-            li.append(archiveList[i].collaborator[j].email);
+            li.append(reminderList[i].collaborator[j].name);
+            li.append(reminderList[i].collaborator[j].email);
             li.append(del);
-            card = document.getElementById(archiveList[i].cardId);
+            card = document.getElementById(reminderList[i].cardId);
             $(card).find('#collaboratorList').append(li);
           }
         }
 
-      } else appendCard(user, archiveList[i].title, archiveList[i].text, archiveList[i].cardId, 'cardList', archiveList[i].color) //.then(function(){
+      } else appendCard(user, reminderList[i].title, reminderList[i].text,
+        reminderList[i].cardId, 'cardList', reminderList[i].color,reminderList[i].reminder.date,
+      reminderList[i].reminder.month,reminderList[i].reminder.year,reminderList[i].reminder.hours,
+      reminderList[i].reminder.minutes,reminderList[i].seconds) //.then(function(){
 
-      if (archiveList[i].image != null) {
+      if (reminderList[i].image != null) {
         var img = document.createElement("IMG");
-        img.src = "../Images/" + archiveList[i].image;
+        img.src = "../Images/" + reminderList[i].image;
         $(img).css("max-width", "200px");
         $(img).css("max-height", "200px")
-        var elem = document.getElementById(archiveList[i].cardId)
+        var elem = document.getElementById(reminderList[i].cardId)
         $(elem).find('.cardImage').append(img);
         // $('#card').css("min-width","content");
         $(elem).closest('.card-content').css("height", "400px");
       }
-      if (archiveList[i].url.length > 0) {
+      if (reminderList[i].url.length > 0) {
         var urlList = document.createElement("ul");
-        var elem = document.getElementById(archiveList[i].cardId)
+        var elem = document.getElementById(reminderList[i].cardId)
         $(elem).find('.card-content').append(urlList);
         // $(elem).closest('.card-content').css("height","400px");
-        for (j in archiveList[i].url) {
+        for (j in reminderList[i].url) {
           var urldiv = document.createElement('li');
           urldiv.className = "card";
-          urldiv.append(archiveList[i].url[j].title)
+          urldiv.append(reminderList[i].url[j].title)
           var link1 = document.createElement("a");
           link1.innerText = "visit"
           link1.target = "_blank"
-          link1.href = "http://" + archiveList[i].url[j].baseurl;
+          link1.href = "http://" + reminderList[i].url[j].baseurl;
           var link2 = document.createElement("a");
           link2.innerText = "Remove"
-          link2.href = "/removeURL?url=" + archiveList[i].url[j].baseurl +
-            "&cardId=" + archiveList[i].cardId
+          link2.href = "/removeURL?url=" + reminderList[i].url[j].baseurl +
+            "&cardId=" + reminderList[i].cardId
           var img = document.createElement("img");
           img.alt = "IMG";
           img.className = "img-responsive img-thumbnail"
           $(img).css("max-width", "40px");
           $(img).css("max-height", "40px");
-          if (archiveList[i].url[j].image != null) {
-            img.src = archiveList[i].url[j].image
+          if (reminderList[i].url[j].image != null) {
+            img.src = reminderList[i].url[j].image
           }
           urldiv.append(img)
           urldiv.append(link1);
@@ -281,17 +290,19 @@ if (archiveList.length > 0) {
  * @return {[type]}        [description]
  */
 //function to print cards
-function appendCard(user, title, text, cardId, divId, color) {
+function appendCard(user, title, text, cardId, divId, color,date,month,year,hours,minutes,seconds) {
   if (divId == 'pinned')
     url = '../icons/pinned.svg'
   else url = '../icons/pin.svg'
   imgSrc = ""
   document.getElementById(divId).innerHTML += "<div class='col-md-4' id='" + cardId + "'><div class='card' style='background-color:" + color + "'>" +
+  '<div style="float:left" class="col-sm-2"><a data-toggle="tooltip" title="Cancel reminder" href="/cancelReminder?cardId=' + cardId +
+  '"><i class="material-icons">alarm_on</i>'+date+"/"+month+"/"+year+","+hours+":"+minutes+":"+seconds+
+  '</a></div>' +
     '<a href="pin?cardId=' + cardId + '"><img src=' + url + ' style="float:right" alt="pin" id="pinIcon"/></a>' +
-    //  "<div class='cardImage'> </div>"+
     "<div class='cardImage'></div><div class='card-content'><div class='title cardTitle' name='title' style='background-color:" + color + "'><p>" + title + "</p></div>" +
-    "<div class='cardText' style='background-color:" + color + ";'><p>" + text + "</p></div></div>" +
-    "<div class='card-footer'><div><div id='footerButtons'>" +
+    "<div class='cardText' style='background-color:" + color + ";'><p>" + text + "</p></div>" +
+    "<div class='card-footer'><div id='footerButtons'>" +
     "<a class='popoverReminder' id='load'><i class='material-icons'>alarm</i></a>" +
     '<a data-toggle="tooltip" title="Unarchive" href="/unarchive?cardId=' + cardId + '"><i class="material-icons" >unarchive</i></a>&nbsp' +
     '<div data-toggle="tooltip" title="Add collaborator" class="dropdown"><a class="dropdown-toggle" id="collaboratorDropdown" data-toggle="dropdown"><i class="material-icons">person_add</i></a>' +
@@ -320,8 +331,8 @@ function appendCard(user, title, text, cardId, divId, color) {
     "<div class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown'><i class='material-icons'>more_vert</i></a>" +
     '<ul class="dropdown-menu"><li><a data-toggle="tooltip" title="Delete" href="/moveToTrash?cardId=' + cardId + '">Delete</a></li>' +
     '<li><a data-toggle="tooltip" title="Set Location" href="/addLocation?cardId=' + cardId + '">Add Location</a></li>' +
-    '</ul></div>' +
-    "</div></div><div>"
+    '</ul></div>' +"</div></div>"+
+    "</div></div></div>"
 }
 //function to add collaborator card
 //function to print cards
@@ -330,7 +341,11 @@ function appendCollaboratorCard(user, title, text, cardId, divId, color) {
     url = '../icons/pinned.svg'
   else url = '../icons/pin.svg'
   imgSrc = ""
-  document.getElementById(divId).innerHTML += "<div class='col-md-4' id='" + cardId + "'><div class='card' style='background-color:" + color + "'>" +
+  document.getElementById(divId).innerHTML += "<div class='col-md-4' id='" + cardId + "'>"+
+    '<div style="float:left" class="col-sm-2"><a data-toggle="tooltip" title="Cancel reminder" href="/cancelReminder?cardId=' + cardId +
+    '"><i class="material-icons">alarm_on</i>'+date+"/"+month+"/"+year+","+hours+":"+minutes+":"+seconds+
+    '</a></div>' +
+    "<div class='card' style='background-color:" + color + "'>" +
     '<a href="pin?cardId=' + cardId + '"><img src=' + url + ' style="float:right" alt="pin" id="pinIcon"/></a>' +
     //  "<div class='cardImage'> </div>"+
     "<div class='cardImage'></div><div class='card-content'><div class='title cardTitle' name='title' style='background-color:" + color + "'><p>" + title + "</p></div>" +

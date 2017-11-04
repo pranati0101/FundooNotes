@@ -10,39 +10,19 @@ html
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
     link(rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-notify/0.2.0/css/bootstrap-notify.css")
-    //- link(rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css")
-    //- script(defer src="https://code.getmdl.io/1.3.0/material.min.js")
     link(rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css")
     link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons")
-    //- link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css")
-    //- link(rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.css")
-    //- link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css")
     link(rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css")
     link(rel="stylesheet" href="../css/croppie.css")
-    //- link(rel="stylesheet" href="../css/card.css")
     script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
-    //- /*script(src='https://code.jquery.com/jquery-1.12.4.js')*/
-    //- /*script(src="https://code.jquery.com/jquery-3.1.1.min.js")*/
-    //- /*script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.js')*/
     script(src='https://code.jquery.com/ui/1.12.1/jquery-ui.js')
-    
     script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.js")
-
-    //- /*script(src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment.min.js")*/
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
-    
-    //- /*script(src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js")*/
-    //- /*script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.1.4/js/bootstrap-datetimepicker.min.js")*/
-    //- /*script(src='http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js')*/
     script(src="http://localhost:4000/socket.io/socket.io.js")
-    //- /*script(src="http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js")
-    //- script(src="http://builds.emberjs.com/tags/v1.5.0/ember.js")*/
     //-  <!--  Dynamic Elements plugin -->
     script(src="https://cdnjs.cloudflare.com/ajax/libs/arrive/2.4.1/arrive.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/arrive/2.4.1/arrive.min.js")
-    //- /*script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.8.1/js/perfect-scrollbar.jquery.min.js")*/
-    //- /*script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-notify/0.2.0/css/bootstrap-notify.min.css")*/
     script(src="../assets/js/material-dashboard.js")
     script(src="../assets/js/demo.js")
     script(type="text/javascript" src="../js/profile.js")
@@ -125,20 +105,37 @@ html
                 i(class="material-icons") delete
                 div(style='display:inline-block') Trash
       div(class="main-panel" id="mainPanel")
-        div(class="row" id='createCards')
-          div(class="col-md-4")
-            form(class="card" method="POST" action="createCard")
-              input(class="title" name='title' style="border-style:none" id="cardTitle" placeholder="Enter title...")
-              input(class='text-success' name='text' id="cardText" style="border-style:none" placeholder="Enter text..")
-              div(class="card-footer" id="createCardsFooter")
-                button(align="right" type="submit" class="btn btn-white btn-round btn-just-icon")
-                  i(class="material-icons") add
+        div(class="row col-md-4" id='createCards')
+          form(class="card" method="POST" action="createCard")
+            input(class="title" name='title' style="border-style:none" id="cardTitle" placeholder="Enter title...")
+            input(class='text-success' name='text' id="cardText" style="border-style:none" placeholder="Enter text..")
+            div(class="card-footer" id="createCardsFooter")
+              button(align="right" type="submit" class="btn btn-white btn-round btn-just-icon")
+                i(class="material-icons") add
         div(class="content")
           div(class="container-fluid")
             div(class="row" id="pinnedLabel")
             div(class="row" id="pinned")
             div(class="row" id="cardListLabel")
-            div(class="row" id="cardList")    
+            div(class="row" id="cardList")
+            div(class="modal fade" id="reminderModal" role="dialog")
+              div(class="modal-dialog")
+                  //-<!-- Modal content-->
+                  div(class="modal-content")
+                    div(class="modal-body")
+                      a(id="laterToday") Later Today(8:00 PM)
+                      div
+                        a(id="tomorrow") Tomorrow(8:00 AM)
+                      div
+                      input(type="text" class="timepicker" style="border:none" placeholder="Enter custom time")
+                      input(type="text" class="datepicker" style="border:none" placeholder="Enter custom date")
+                      a(class="dropdown" data-toggle="dropdown") Pick a Location
+                        div(class="dropdown-menu") 
+                          input(type="text" style="border:none" placeholder="Enter Location")
+                      button(type="submit" id="setReminder" class="btn btn-default") set Reminder
+                    div(class="modal-footer")
+                      //-cancel button in footer -->          
+                      button(type="button" class="btn btn-default" data-dismiss="modal") Cancel     
             div(class="modal fade" id="updateCardModal" role="dialog")
               div(class="modal-dialog")
                 //-<!-- Modal content-->
@@ -146,7 +143,7 @@ html
                   div(class="modal-body")
                     form(id="updateContentForm" method="POST" action="/updateCard")
                       input(type="text" name="title" id="title" style="display:block" placeholder="Enter title")
-                      input(type="text" name="text" id="text" style="display:block" placeholder="Enter text")
+                      input(type="text" name="text" id="text" style="display:block")
                       button(type="submit" class="btn btn-default") Done
                   div(class="modal-footer")
                     //-cancel button in footer -->          
